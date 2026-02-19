@@ -1,0 +1,2433 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>El Informador Nacional - Noticias de Argentina</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&family=IBM+Plex+Mono:wght@300;400;500&family=Bebas+Neue&family=Special+Elite&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1208;
+    --paper: #f5f0e8;
+    --paper2: #ede8da;
+    --red: #c0392b;
+    --dark-red: #7b1c12;
+    --gold: #b8860b;
+    --border: #c8b89a;
+    --muted: #6b5f4e;
+    --sidebar-bg: #2c2416;
+    --header-bg: #1a1208;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  /* ============ PHASE 0: CLEAN NEWS SITE ============ */
+  #phase-0 {
+    display: block;
+    background: #fff;
+  }
+
+  .p0-topbar {
+    background: #fff;
+    border-bottom: 1px solid #e8e8e8;
+    padding: 10px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .p0-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 900;
+    color: #111;
+    letter-spacing: -0.5px;
+  }
+
+  .p0-logo span { color: #c0392b; }
+
+  .p0-topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: #999;
+  }
+
+  .p0-topbar-right a {
+    color: #555;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .p0-topbar-right a:hover { color: #c0392b; }
+
+  .p0-subscribe {
+    background: #c0392b;
+    color: white !important;
+    padding: 6px 14px;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+  }
+
+  .p0-subscribe:hover { background: #a93226 !important; color: white !important; }
+
+  .p0-nav {
+    border-top: 1px solid #e8e8e8;
+    border-bottom: 3px solid #111;
+    display: flex;
+    padding: 0 40px;
+    gap: 0;
+    overflow-x: auto;
+  }
+
+  .p0-nav a {
+    font-family: 'Source Serif 4', serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+    text-decoration: none;
+    padding: 11px 16px;
+    white-space: nowrap;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -3px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .p0-nav a:hover { color: #c0392b; border-bottom-color: #c0392b; }
+  .p0-nav a.active { color: #111; border-bottom-color: #111; font-weight: 700; }
+  .p0-nav a.nav-special { color: #c0392b; font-weight: 700; }
+
+  .p0-content {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 32px 40px;
+  }
+
+  /* Hero grid */
+  .p0-hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 0;
+    border-bottom: 1px solid #e8e8e8;
+    padding-bottom: 32px;
+    margin-bottom: 32px;
+  }
+
+  .p0-hero-main {
+    padding-right: 32px;
+    border-right: 1px solid #e8e8e8;
+  }
+
+  .p0-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #c0392b;
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  .p0-hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    font-weight: 900;
+    line-height: 1.15;
+    color: #111;
+    margin-bottom: 12px;
+  }
+
+  .p0-hero-deck {
+    font-family: 'Source Serif 4', serif;
+    font-size: 16px;
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 16px;
+    font-style: italic;
+  }
+
+  .p0-hero-meta {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: #aaa;
+    margin-bottom: 20px;
+  }
+
+  .p0-hero-img {
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: #1a1a1a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    margin-bottom: 8px;
+    overflow: hidden;
+  }
+
+  .p0-hero-img-inner {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(160deg, #1e1e2e 0%, #2a1a1a 40%, #1a1e1a 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .p0-img-caption {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: #aaa;
+    margin-bottom: 16px;
+  }
+
+  .p0-hero-excerpt {
+    font-family: 'Source Serif 4', serif;
+    font-size: 15px;
+    line-height: 1.7;
+    color: #333;
+  }
+
+  .p0-hero-excerpt p { margin-bottom: 12px; }
+
+  .p0-read-more {
+    display: inline-block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: #c0392b;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-bottom: 1px solid #c0392b;
+    padding-bottom: 1px;
+    margin-top: 4px;
+  }
+
+  /* Sidebar stack */
+  .p0-hero-side {
+    padding-left: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .p0-side-item {
+    padding: 16px 0;
+    border-bottom: 1px solid #e8e8e8;
+    cursor: pointer;
+  }
+
+  .p0-side-item:first-child { padding-top: 0; }
+  .p0-side-item:last-child { border-bottom: none; }
+
+  .p0-side-title {
+    font-family: 'Source Serif 4', serif;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.3;
+    color: #111;
+    margin-bottom: 5px;
+  }
+
+  .p0-side-title:hover { color: #c0392b; }
+
+  .p0-side-meta {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: #bbb;
+  }
+
+  .p0-side-item.highlight .p0-side-title { color: #c0392b; }
+
+  /* Bottom grid */
+  .p0-bottom-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+  }
+
+  .p0-card {
+    cursor: pointer;
+  }
+
+  .p0-card-img {
+    width: 100%;
+    aspect-ratio: 3/2;
+    background: #111;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .p0-card-title {
+    font-family: 'Source Serif 4', serif;
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.3;
+    color: #111;
+    margin-bottom: 6px;
+  }
+
+  .p0-card:hover .p0-card-title { color: #c0392b; }
+
+  .p0-card-excerpt {
+    font-family: 'Source Serif 4', serif;
+    font-size: 13px;
+    color: #777;
+    line-height: 1.5;
+  }
+
+  .p0-card.card-special { border-top: 2px solid #c0392b; padding-top: 12px; }
+
+  .p0-footer {
+    border-top: 1px solid #e8e8e8;
+    margin-top: 48px;
+    padding: 24px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: #bbb;
+  }
+
+  .p0-footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 900;
+    color: #333;
+  }
+
+  .p0-footer-logo span { color: #c0392b; }
+
+  /* ============ PHASE 1: SUBMENU MAZE ============ */
+  #phase-1 {
+    display: none;
+    min-height: 100vh;
+    background: var(--paper);
+  }
+
+  /* ============ PHASE 1: POLICIALES SECTION ============ */
+  #phase-1 {
+    display: none;
+    min-height: 100vh;
+    background: #fff;
+  }
+
+  .sub-header {
+    background: #fff;
+    border-bottom: 1px solid #e8e8e8;
+    padding: 10px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .sub-header-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 900;
+    color: #111;
+    cursor: pointer;
+  }
+  .sub-header-logo span { color: #c0392b; }
+
+  .sub-header-right {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: #bbb;
+    display: flex;
+    gap: 16px;
+    align-items: center;
+  }
+
+  .sub-header-right a {
+    color: #555;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .sub-header-right a:hover { color: #c0392b; }
+
+  .sub-nav-bar {
+    border-top: 1px solid #e8e8e8;
+    border-bottom: 3px solid #111;
+    display: flex;
+    padding: 0 40px;
+    gap: 0;
+    overflow-x: auto;
+  }
+
+  .sub-nav-bar a {
+    font-family: 'Source Serif 4', serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
+    text-decoration: none;
+    padding: 10px 14px;
+    white-space: nowrap;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -3px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .sub-nav-bar a:hover { color: #c0392b; border-bottom-color: #c0392b; }
+  .sub-nav-bar a.active { color: #111; border-bottom-color: #111; font-weight: 700; }
+
+  .sub-breadcrumb {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: #bbb;
+    padding: 8px 40px;
+    background: #fafafa;
+    border-bottom: 1px solid #f0f0f0;
+    letter-spacing: 0.03em;
+  }
+
+  .sub-content {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 32px 40px;
+  }
+
+  .sub-section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 900;
+    color: #111;
+    border-bottom: 3px solid #111;
+    padding-bottom: 12px;
+    margin-bottom: 8px;
+  }
+
+  .sub-filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 28px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #eee;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: #aaa;
+  }
+
+  .sub-filter-bar select {
+    background: white;
+    border: 1px solid #ddd;
+    padding: 5px 10px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: #333;
+    outline: none;
+    cursor: pointer;
+  }
+
+  .sub-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: #e8e8e8;
+    border: 1px solid #e8e8e8;
+  }
+
+  .sub-card {
+    background: white;
+    padding: 22px 24px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .sub-card:hover { background: #fafafa; }
+
+  .sub-card-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #c0392b;
+    margin-bottom: 8px;
+  }
+
+  .sub-card h3 {
+    font-family: 'Source Serif 4', serif;
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.35;
+    color: #111;
+    margin-bottom: 8px;
+  }
+
+  .sub-card:hover h3 { color: #c0392b; }
+
+  .sub-card p {
+    font-family: 'Source Serif 4', serif;
+    font-size: 13px;
+    color: #777;
+    line-height: 1.5;
+    margin-bottom: 12px;
+  }
+
+  .sub-card .link-btn {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: #c0392b;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+  }
+
+  .sub-card.card-special {
+    border-left: 3px solid #c0392b;
+  }
+
+  /* ============ PHASE 2: DEEP SUBMENU ============ */
+  #phase-2 {
+    display: none;
+    min-height: 100vh;
+    background: #fff;
+  }
+
+  .deep-nav-stack {
+    background: var(--ink);
+    padding: 10px 24px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .deep-nav-stack > * {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: #888;
+    letter-spacing: 0.05em;
+  }
+
+  .deep-nav-stack .arrow { color: #444; }
+  .deep-nav-stack .current { color: #c8b48a; }
+
+  .deep-content {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 36px 40px;
+  }
+
+  .deep-content h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 30px;
+    font-weight: 900;
+    color: #111;
+    line-height: 1.15;
+    margin-bottom: 8px;
+  }
+
+  .deep-content .meta {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: #bbb;
+    margin-bottom: 20px;
+    padding: 10px 0;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+  }
+
+  .deep-body {
+    font-family: 'Source Serif 4', serif;
+    font-size: 17px;
+    line-height: 1.85;
+    color: #222;
+  }
+
+  .deep-body p { margin-bottom: 18px; }
+
+  .anomaly-link {
+    color: var(--red);
+    cursor: pointer;
+    text-decoration: underline;
+    font-style: italic;
+  }
+
+  .deep-tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .tag {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 3px 10px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+  }
+
+  .tag:hover { background: var(--red); }
+
+  .related-box {
+    background: #f5f0e8;
+    border: 2px solid var(--border);
+    border-left: 4px solid var(--red);
+    padding: 16px 20px;
+    margin-top: 24px;
+  }
+
+  .related-box h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+
+  .related-box ul { list-style: none; }
+  .related-box li {
+    padding: 6px 0;
+    border-bottom: 1px dotted var(--border);
+    font-size: 14px;
+    cursor: pointer;
+    color: var(--red);
+  }
+  .related-box li:hover { text-decoration: underline; }
+
+  /* ============ PHASE 3: GLITCH TRANSITION ============ */
+  #phase-3 {
+    display: none;
+    min-height: 100vh;
+    background: #0a0a0a;
+    color: #0f0;
+    font-family: 'IBM Plex Mono', monospace;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .terminal-screen {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 24px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .terminal-screen::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(0deg, rgba(0,0,0,0.15), rgba(0,0,0,0.15) 1px, transparent 1px, transparent 2px);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .term-line {
+    margin-bottom: 4px;
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    opacity: 0;
+    animation: fadein 0.1s forwards;
+  }
+
+  .term-prompt { color: #0a0; }
+  .term-error { color: #f44; }
+  .term-warn { color: #fa0; }
+  .term-dim { color: #044; }
+  .term-bright { color: #0ff; }
+  .term-red { color: #f00; }
+
+  @keyframes fadein { to { opacity: 1; } }
+
+  .glitch-text {
+    animation: glitch 0.3s infinite;
+  }
+
+  @keyframes glitch {
+    0% { text-shadow: 2px 0 #f00, -2px 0 #0ff; }
+    33% { text-shadow: -2px 0 #f00, 2px 0 #0ff; }
+    66% { text-shadow: 0 2px #f00, 0 -2px #0ff; }
+    100% { text-shadow: 2px 0 #f00, -2px 0 #0ff; }
+  }
+
+  .continue-btn-dark {
+    display: inline-block;
+    background: transparent;
+    border: 1px solid #0f0;
+    color: #0f0;
+    padding: 10px 24px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    cursor: pointer;
+    margin-top: 30px;
+    letter-spacing: 0.1em;
+    transition: all 0.2s;
+  }
+
+  .continue-btn-dark:hover {
+    background: #0f0;
+    color: #000;
+  }
+
+  /* ============ PHASE 4: VISUAL NOVEL ============ */
+  #phase-4 {
+    display: none;
+    min-height: 100vh;
+    background: #0d0d0d;
+    position: relative;
+    font-family: 'Courier Prime', monospace;
+  }
+
+  .vn-scene {
+    display: none;
+    min-height: 100vh;
+    position: relative;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    padding-bottom: 0;
+  }
+
+  .vn-scene.active { display: flex; }
+
+  .vn-bg {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    transition: all 1s ease;
+    z-index: 0;
+  }
+
+  .vn-bg-home {
+    background: radial-gradient(ellipse at center, #1a1a2e 0%, #0d0d0d 70%);
+  }
+
+  .vn-bg-rain {
+    background: linear-gradient(180deg, #0a0f1a 0%, #0d1520 50%, #060d14 100%);
+    overflow: hidden;
+  }
+
+  .vn-bg-office {
+    background: radial-gradient(ellipse at 30% 50%, #1a1205 0%, #0d0c0a 60%, #0a0a0a 100%);
+  }
+
+  .vn-bg-morgue {
+    background: radial-gradient(ellipse at center top, #0f1515 0%, #050a0a 70%);
+  }
+
+  .vn-bg-woods {
+    background: radial-gradient(ellipse at 50% 80%, #0a1205 0%, #050a02 60%, #020402 100%);
+  }
+
+  .vn-bg-ufo {
+    background: radial-gradient(ellipse at 50% 30%, #000520 0%, #000010 50%, #000005 100%);
+  }
+
+  .vn-bg-bunker {
+    background: radial-gradient(ellipse at center, #1a0505 0%, #0d0202 70%);
+  }
+
+  .rain-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+  }
+
+  .vn-ambient {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 60%;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Static noise effect */
+  .noise-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    opacity: 0.03;
+    pointer-events: none;
+    z-index: 5;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  }
+
+  .vn-textbox {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(5, 5, 10, 0.97);
+    border-top: 2px solid rgba(150, 100, 50, 0.4);
+    padding: 28px 40px 30px;
+    z-index: 100;
+    cursor: pointer;
+    min-height: 200px;
+    backdrop-filter: blur(10px);
+  }
+
+  .vn-textbox::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(200,150,80,0.6), transparent);
+  }
+
+  .vn-speaker {
+    font-family: 'Special Elite', monospace;
+    font-size: 14px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    padding: 4px 12px;
+    display: inline-block;
+    border-left: 3px solid;
+  }
+
+  .speaker-yo { color: #c8a060; border-color: #c8a060; background: rgba(200,160,96,0.05); }
+  .speaker-voz { color: #60a0c8; border-color: #60a0c8; background: rgba(96,160,200,0.05); }
+  .speaker-detective { color: #90c860; border-color: #90c860; background: rgba(144,200,96,0.05); }
+  .speaker-hombre { color: #c86060; border-color: #c86060; background: rgba(200,96,96,0.05); }
+  .speaker-sistema { color: #a060c8; border-color: #a060c8; background: rgba(160,96,200,0.05); }
+  .speaker-ella { color: #c860a0; border-color: #c860a0; background: rgba(200,96,160,0.05); }
+  .speaker-narrador { color: #888; border-color: #555; background: transparent; font-style: italic; }
+
+  .vn-text {
+    font-family: 'Courier Prime', monospace;
+    font-size: 17px;
+    line-height: 1.8;
+    color: #e8e0d0;
+    max-width: 900px;
+    margin: 0 auto;
+    text-shadow: 0 0 20px rgba(200,160,96,0.1);
+  }
+
+  .vn-cursor {
+    display: inline-block;
+    width: 8px;
+    height: 16px;
+    background: #c8a060;
+    vertical-align: middle;
+    margin-left: 4px;
+    animation: blink 1s step-end infinite;
+  }
+
+  @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0;} }
+
+  .vn-advance {
+    position: absolute;
+    bottom: 16px;
+    right: 40px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: #555;
+    letter-spacing: 0.1em;
+    animation: pulse-hint 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-hint {
+    0%,100%{opacity:0.4;}
+    50%{opacity:1;}
+  }
+
+  .vn-chapter {
+    position: fixed;
+    top: 40px;
+    left: 0; right: 0;
+    text-align: center;
+    z-index: 50;
+    pointer-events: none;
+  }
+
+  .vn-chapter-text {
+    font-family: 'Special Elite', serif;
+    font-size: 13px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(200,160,96,0.5);
+  }
+
+  /* Scene illustration areas */
+  .vn-illustration {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    bottom: 200px;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+
+  .vn-character {
+    position: absolute;
+    bottom: 200px;
+    font-size: 120px;
+    opacity: 0.15;
+    filter: blur(1px);
+    animation: float-char 6s ease-in-out infinite;
+    z-index: 3;
+  }
+
+  @keyframes float-char {
+    0%,100%{transform:translateY(0)}
+    50%{transform:translateY(-15px)}
+  }
+
+  .vn-atmosphere {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 200px;
+    z-index: 2;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  /* Choice system */
+  .vn-choices {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(5,5,10,0.97);
+    border-top: 2px solid rgba(150,100,50,0.4);
+    padding: 30px 40px;
+    z-index: 100;
+    display: none;
+  }
+
+  .vn-choices.active { display: block; }
+
+  .vn-choices h3 {
+    font-family: 'Special Elite', monospace;
+    font-size: 14px;
+    letter-spacing: 0.15em;
+    color: #888;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .choice-btn {
+    display: block;
+    width: 100%;
+    max-width: 700px;
+    background: rgba(200,160,96,0.05);
+    border: 1px solid rgba(200,160,96,0.2);
+    color: #e8e0d0;
+    padding: 14px 20px;
+    font-family: 'Courier Prime', monospace;
+    font-size: 15px;
+    text-align: left;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: all 0.2s;
+    letter-spacing: 0.02em;
+  }
+
+  .choice-btn:hover {
+    background: rgba(200,160,96,0.12);
+    border-color: rgba(200,160,96,0.5);
+    padding-left: 30px;
+  }
+
+  .choice-btn::before {
+    content: '▸ ';
+    color: #c8a060;
+  }
+
+  /* Particles/effects */
+  .star-field {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+  }
+
+  .star {
+    position: absolute;
+    border-radius: 50%;
+    animation: twinkle var(--dur, 3s) ease-in-out infinite var(--delay, 0s);
+  }
+
+  @keyframes twinkle {
+    0%,100%{opacity:var(--min-op,0.2);}
+    50%{opacity:1;}
+  }
+
+  .scan-line {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: rgba(0,255,0,0.1);
+    animation: scan 8s linear infinite;
+    pointer-events: none;
+    z-index: 200;
+  }
+
+  @keyframes scan {
+    0%{top:-3px;}
+    100%{top:100vh;}
+  }
+
+  /* Typewriter effect */
+  .typewriter { overflow: hidden; }
+
+  /* Photo evidence */
+  .vn-photo {
+    position: fixed;
+    border: 8px solid #f5f0e8;
+    box-shadow: 4px 4px 20px rgba(0,0,0,0.8), 0 0 60px rgba(0,0,0,0.5);
+    transform: rotate(var(--rot, -3deg));
+    z-index: 10;
+    font-family: 'Courier Prime', monospace;
+    font-size: 11px;
+    background: #f5f0e8;
+    color: #333;
+    text-align: center;
+    padding: 0 0 20px 0;
+    max-width: 180px;
+    opacity: 0;
+    transition: opacity 1s;
+  }
+
+  .vn-photo.show { opacity: 1; }
+
+  .vn-photo-img {
+    width: 164px;
+    height: 120px;
+    margin-bottom: 6px;
+  }
+
+  .vn-map {
+    position: fixed;
+    top: 30px;
+    right: 40px;
+    background: rgba(5,5,10,0.9);
+    border: 1px solid rgba(200,160,96,0.3);
+    padding: 12px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: #c8a060;
+    letter-spacing: 0.05em;
+    z-index: 50;
+    max-width: 200px;
+    display: none;
+  }
+
+  .vn-map.show { display: block; }
+
+  .vn-map h4 { margin-bottom: 8px; letter-spacing: 0.1em; opacity: 0.7; }
+  .vn-map-item { margin-bottom: 4px; opacity: 0.6; }
+  .vn-map-item.active { opacity: 1; color: #fff; }
+
+  /* Fade transition */
+  .fade-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: black;
+    z-index: 1000;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  /* Credits-like text appearing in the middle of scene */
+  .floating-text {
+    position: fixed;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Special Elite', serif;
+    font-size: 22px;
+    color: rgba(200,160,96,0.7);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    text-align: center;
+    pointer-events: none;
+    z-index: 50;
+    display: none;
+    text-shadow: 0 0 40px rgba(200,160,96,0.3);
+  }
+
+  .floating-text.show { display: block; animation: float-appear 3s ease-in-out; }
+
+  @keyframes float-appear {
+    0%{opacity:0;transform:translate(-50%,-50%) scale(0.8);}
+    30%{opacity:1;transform:translate(-50%,-50%) scale(1);}
+    70%{opacity:1;}
+    100%{opacity:0;transform:translate(-50%,-50%) scale(1.1);}
+  }
+
+  /* Rain animation */
+  .rain-drop {
+    position: absolute;
+    width: 1px;
+    background: linear-gradient(transparent, rgba(100,150,200,0.4));
+    animation: fall linear infinite;
+  }
+
+  @keyframes fall {
+    0%{top:-100px;}
+    100%{top:100vh;}
+  }
+
+  /* Newspaper clipping that appears */
+  .clipping {
+    position: fixed;
+    background: #f5f0e8;
+    border: 1px solid #ddd;
+    padding: 16px;
+    max-width: 300px;
+    font-family: 'Special Elite', serif;
+    color: #222;
+    box-shadow: 8px 8px 30px rgba(0,0,0,0.9);
+    z-index: 20;
+    display: none;
+    transform: rotate(2deg);
+  }
+
+  .clipping.show { display: block; }
+
+  .clipping-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 900;
+    margin-bottom: 8px;
+    line-height: 1.2;
+  }
+
+  .clipping-body {
+    font-size: 11px;
+    line-height: 1.6;
+    color: #444;
+    margin-bottom: 8px;
+  }
+
+  .clipping-stamp {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 18px;
+    color: red;
+    border: 2px solid red;
+    display: inline-block;
+    padding: 2px 8px;
+    transform: rotate(-15deg);
+    opacity: 0.8;
+    margin-top: 8px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== PHASE 0: NEWSPAPER ==================== -->
+<div id="phase-0">
+
+  <!-- Header -->
+  <div class="p0-topbar">
+    <div class="p0-logo">El Informador <span>Nacional</span></div>
+    <div class="p0-topbar-right">
+      <span>Jueves 19 feb. 2026 · Buenos Aires · 18°C</span>
+      <a onclick="openModal('login')">Iniciar sesión</a>
+      <a onclick="openModal('subscribe')" class="p0-subscribe">Suscribirse</a>
+    </div>
+  </div>
+
+  <!-- Nav -->
+  <nav class="p0-nav">
+    <a class="active" onclick="showSection('portada')">Portada</a>
+    <a onclick="showSection('politica')">Política</a>
+    <a onclick="showSection('economia')">Economía</a>
+    <a onclick="showSection('mundo')">Mundo</a>
+    <a onclick="goToPhase1('Policiales','Policiales','Casos sin resolver')" class="nav-special">Policiales</a>
+    <a onclick="showSection('sociedad')">Sociedad</a>
+    <a onclick="showSection('tecnologia')">Tecnología</a>
+    <a onclick="showSection('cultura')">Cultura</a>
+    <a onclick="showSection('deportes')">Deportes</a>
+    <a onclick="showSection('opinion')">Opinión</a>
+  </nav>
+
+  <!-- Content -->
+  <div class="p0-content" id="p0-main-content">
+
+    <!-- PORTADA VIEW -->
+    <div id="view-portada">
+      <!-- Hero grid -->
+      <div class="p0-hero-grid">
+        <div class="p0-hero-main">
+          <span class="p0-tag">Economía nacional</span>
+          <div class="p0-hero-title" onclick="openArticle('bcra')" style="cursor:pointer;">El Banco Central eleva la tasa de referencia al 48% en medio de la crisis cambiaria</div>
+          <div class="p0-hero-deck">La medida, anunciada tras una reunión de emergencia del directorio, busca contener la presión cambiaria que amenaza con superar el pico de diciembre pasado.</div>
+          <div class="p0-hero-meta">Por Valentina Rossi · hace 23 min</div>
+          <div class="p0-hero-img" onclick="openArticle('bcra')" style="cursor:pointer;">
+            <div class="p0-hero-img-inner">
+              <svg width="240" height="100" viewBox="0 0 240 100" fill="none">
+                <polyline points="10,80 50,55 90,65 130,30 170,20 210,40" stroke="rgba(255,255,255,0.25)" stroke-width="2"/>
+                <rect x="10" y="82" width="16" height="16" fill="rgba(255,255,255,0.08)" rx="1"/>
+                <rect x="50" y="57" width="16" height="41" fill="rgba(255,255,255,0.08)" rx="1"/>
+                <rect x="90" y="67" width="16" height="31" fill="rgba(255,255,255,0.08)" rx="1"/>
+                <rect x="130" y="32" width="16" height="66" fill="rgba(255,255,255,0.12)" rx="1"/>
+                <rect x="170" y="22" width="16" height="76" fill="rgba(255,255,255,0.15)" rx="1"/>
+                <rect x="210" y="42" width="16" height="56" fill="rgba(255,255,255,0.1)" rx="1"/>
+              </svg>
+            </div>
+          </div>
+          <div class="p0-img-caption">Sede del BCRA, Buenos Aires. (Foto: Télam)</div>
+          <div class="p0-hero-excerpt">
+            <p>El Banco Central anunció ayer una suba de la tasa de referencia de cuatro puntos, ubicándola en el 48% anual. La decisión fue recibida con escepticismo por el mercado financiero local, que aguardaba señales más contundentes sobre el sendero cambiario.</p>
+            <p>Analistas advierten que la medida podría profundizar la recesión en curso dado el encarecimiento del crédito para PyMEs. En el mercado paralelo, el dólar tocó los $1.920 en las primeras horas de la rueda.</p>
+          </div>
+          <span class="p0-read-more" onclick="openArticle('bcra')">Seguir leyendo →</span>
+        </div>
+
+        <div class="p0-hero-side">
+          <div class="p0-side-item" onclick="openArticle('coalicion')" style="cursor:pointer;">
+            <span class="p0-tag">Política</span>
+            <div class="p0-side-title">La coalición oficialista pierde tres escaños clave en Diputados</div>
+            <div class="p0-side-meta">hace 1 h</div>
+          </div>
+          <div class="p0-side-item" onclick="openArticle('dolar')" style="cursor:pointer;">
+            <span class="p0-tag">Economía</span>
+            <div class="p0-side-title">El dólar libre supera la barrera histórica de los $1.900</div>
+            <div class="p0-side-meta">hace 45 min</div>
+          </div>
+          <div class="p0-side-item highlight" onclick="goToPhase1('Policiales','Policiales','Personas desaparecidas — Zona Norte')" style="cursor:pointer;">
+            <span class="p0-tag">Policiales</span>
+            <div class="p0-side-title">Familiares de desaparecidos acusan a comisaría de Tigre de obstaculizar la búsqueda</div>
+            <div class="p0-side-meta">hace 1 h</div>
+          </div>
+          <div class="p0-side-item" onclick="openArticle('paro')" style="cursor:pointer;">
+            <span class="p0-tag">Sociedad</span>
+            <div class="p0-side-title">Gremios docentes anuncian paro nacional para la semana próxima</div>
+            <div class="p0-side-meta">hace 3 h</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p0-bottom-grid">
+        <div class="p0-card" onclick="openArticle('malvinas')" style="cursor:pointer;">
+          <div class="p0-card-img">
+            <svg width="80" height="50" viewBox="0 0 80 50" fill="none">
+              <circle cx="40" cy="25" r="18" stroke="rgba(255,255,255,0.1)" stroke-width="1.5"/>
+              <path d="M20 35 Q40 10 60 35" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" fill="none"/>
+            </svg>
+          </div>
+          <span class="p0-tag">Mundo</span>
+          <div class="p0-card-title">Tensión en el Atlántico Sur: maniobras militares a 200 km de las Malvinas</div>
+          <div class="p0-card-excerpt">El ministerio de Defensa convocó al embajador británico por las maniobras no anunciadas.</div>
+        </div>
+        <div class="p0-card" onclick="openArticle('fibra')" style="cursor:pointer;">
+          <div class="p0-card-img">
+            <svg width="80" height="50" viewBox="0 0 80 50" fill="none">
+              <rect x="15" y="10" width="50" height="30" rx="2" stroke="rgba(255,255,255,0.1)" stroke-width="1.5"/>
+              <line x1="25" y1="25" x2="55" y2="25" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"/>
+              <line x1="25" y1="32" x2="45" y2="32" stroke="rgba(255,255,255,0.1)" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <span class="p0-tag">Tecnología</span>
+          <div class="p0-card-title">Argentina firma acuerdo con consorcio europeo para fibra óptica submarina</div>
+          <div class="p0-card-excerpt">Inversión de 2.300 millones de dólares en conectividad para el litoral patagónico.</div>
+        </div>
+        <div class="p0-card card-special" onclick="goToPhase1('Policiales','Policiales','Personas desaparecidas — Zona Norte')" style="cursor:pointer;">
+          <div class="p0-card-img" style="background:#1a0808;">
+            <svg width="80" height="50" viewBox="0 0 80 50" fill="none">
+              <circle cx="40" cy="22" r="10" stroke="rgba(192,57,43,0.4)" stroke-width="1.5"/>
+              <line x1="40" y1="32" x2="40" y2="45" stroke="rgba(192,57,43,0.3)" stroke-width="1.5"/>
+              <line x1="28" y1="38" x2="52" y2="38" stroke="rgba(192,57,43,0.3)" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <span class="p0-tag">Policiales · Investigación</span>
+          <div class="p0-card-title">Dieciséis menores desaparecidos en zona norte: ningún caso tiene investigación activa</div>
+          <div class="p0-card-excerpt">Organizaciones de familias advierten un patrón que las autoridades se niegan a reconocer.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION VIEWS (generated by JS) -->
+    <div id="view-section" style="display:none;">
+      <div id="section-header" style="border-bottom:3px solid #111;padding-bottom:12px;margin-bottom:28px;">
+        <div id="section-tag" style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:#c0392b;margin-bottom:6px;"></div>
+        <div id="section-title" style="font-family:'Playfair Display',serif;font-size:30px;font-weight:900;color:#111;"></div>
+      </div>
+      <div id="section-articles" class="p0-bottom-grid" style="grid-template-columns:1fr 1fr 1fr;"></div>
+    </div>
+
+    <!-- ARTICLE VIEW -->
+    <div id="view-article" style="display:none;max-width:720px;margin:0 auto;">
+      <div style="margin-bottom:16px;">
+        <span id="art-back" onclick="closeArticle()" style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#c0392b;cursor:pointer;letter-spacing:0.05em;">← Volver</span>
+      </div>
+      <div id="art-tag" style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:#c0392b;margin-bottom:10px;"></div>
+      <div id="art-title" style="font-family:'Playfair Display',serif;font-size:34px;font-weight:900;line-height:1.15;color:#111;margin-bottom:12px;"></div>
+      <div id="art-deck" style="font-family:'Source Serif 4',serif;font-size:17px;font-style:italic;color:#555;margin-bottom:14px;line-height:1.6;"></div>
+      <div id="art-meta" style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#bbb;border-top:1px solid #eee;border-bottom:1px solid #eee;padding:10px 0;margin-bottom:20px;"></div>
+      <div id="art-img" style="width:100%;aspect-ratio:16/9;background:#111;margin-bottom:8px;display:flex;align-items:center;justify-content:center;"></div>
+      <div id="art-imgcap" style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#aaa;margin-bottom:24px;"></div>
+      <div id="art-body" style="font-family:'Source Serif 4',serif;font-size:17px;line-height:1.85;color:#222;"></div>
+    </div>
+
+  </div>
+
+  <!-- Modals -->
+  <div id="modal-overlay" onclick="closeModal()" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:999;"></div>
+
+  <div id="modal-login" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:white;padding:40px;width:360px;z-index:1000;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+    <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:900;margin-bottom:4px;">Iniciar sesión</div>
+    <div style="font-family:'Source Serif 4',serif;font-size:13px;color:#888;margin-bottom:24px;">El Informador Nacional</div>
+    <input type="email" placeholder="Correo electrónico" style="width:100%;padding:10px 12px;border:1px solid #ddd;font-family:'Source Serif 4',serif;font-size:14px;margin-bottom:12px;outline:none;">
+    <input type="password" placeholder="Contraseña" style="width:100%;padding:10px 12px;border:1px solid #ddd;font-family:'Source Serif 4',serif;font-size:14px;margin-bottom:20px;outline:none;">
+    <button onclick="closeModal()" style="width:100%;background:#111;color:white;padding:11px;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.1em;border:none;cursor:pointer;">INGRESAR</button>
+    <div style="text-align:center;margin-top:16px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#aaa;">¿No tenés cuenta? <span onclick="openModal('subscribe')" style="color:#c0392b;cursor:pointer;">Suscribite</span></div>
+    <div onclick="closeModal()" style="position:absolute;top:16px;right:20px;cursor:pointer;font-size:20px;color:#aaa;">×</div>
+  </div>
+
+  <div id="modal-subscribe" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:white;padding:40px;width:400px;z-index:1000;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+    <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:900;margin-bottom:4px;">Suscribirse</div>
+    <div style="font-family:'Source Serif 4',serif;font-size:13px;color:#888;margin-bottom:20px;">Periodismo independiente desde 1948</div>
+    <div style="border:1px solid #eee;padding:16px;margin-bottom:12px;cursor:pointer;" onclick="selectPlan(this)">
+      <div style="font-family:'Source Serif 4',serif;font-weight:600;font-size:15px;">Digital Básico</div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#c0392b;margin-top:2px;">$2.500 / mes</div>
+      <div style="font-family:'Source Serif 4',serif;font-size:12px;color:#888;margin-top:4px;">Acceso ilimitado a nota. Sin publicidad.</div>
+    </div>
+    <div style="border:2px solid #111;padding:16px;margin-bottom:20px;cursor:pointer;background:#f9f9f9;" onclick="selectPlan(this)">
+      <div style="font-family:'Source Serif 4',serif;font-weight:600;font-size:15px;">Digital + Impreso ★</div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#c0392b;margin-top:2px;">$4.200 / mes</div>
+      <div style="font-family:'Source Serif 4',serif;font-size:12px;color:#888;margin-top:4px;">Todo lo anterior + edición en papel los domingos.</div>
+    </div>
+    <input type="email" placeholder="Tu correo electrónico" style="width:100%;padding:10px 12px;border:1px solid #ddd;font-family:'Source Serif 4',serif;font-size:14px;margin-bottom:12px;outline:none;">
+    <button onclick="closeModal()" style="width:100%;background:#c0392b;color:white;padding:11px;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.1em;border:none;cursor:pointer;">CONTINUAR →</button>
+    <div onclick="closeModal()" style="position:absolute;top:16px;right:20px;cursor:pointer;font-size:20px;color:#aaa;">×</div>
+  </div>
+
+  <!-- Footer -->
+  <div class="p0-footer">
+    <div class="p0-footer-logo">El Informador <span>Nacional</span></div>
+    <div>© 2026 · Av. Corrientes 1234, CABA · Miembro de ADEPA</div>
+    <div>
+      <a onclick="openModal('subscribe')" style="color:#bbb;text-decoration:none;margin:0 8px;cursor:pointer;">Suscribirse</a>
+      <a onclick="openModal('login')" style="color:#bbb;text-decoration:none;margin:0 8px;cursor:pointer;">Iniciar sesión</a>
+      <a onclick="showSection('opinion')" style="color:#bbb;text-decoration:none;cursor:pointer;">Opinión</a>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PHASE 1: SUBMENU ==================== -->
+<div id="phase-1">
+
+  <div class="sub-header">
+    <div class="sub-header-logo" onclick="goToPhase0()">El Informador <span>Nacional</span></div>
+    <div class="sub-header-right">
+      <span>Jueves 19 feb. 2026 · 18°C</span>
+      <a onclick="openModal('login')">Iniciar sesión</a>
+      <a onclick="openModal('subscribe')" class="p0-subscribe">Suscribirse</a>
+    </div>
+  </div>
+
+  <nav class="sub-nav-bar">
+    <a onclick="showSection('portada')">Portada</a>
+    <a onclick="showSection('politica')">Política</a>
+    <a onclick="showSection('economia')">Economía</a>
+    <a onclick="showSection('mundo')">Mundo</a>
+    <a class="active">Policiales</a>
+    <a onclick="showSection('sociedad')">Sociedad</a>
+    <a onclick="showSection('tecnologia')">Tecnología</a>
+    <a onclick="showSection('cultura')">Cultura</a>
+    <a onclick="showSection('deportes')">Deportes</a>
+    <a onclick="showSection('opinion')">Opinión</a>
+  </nav>
+
+  <div class="sub-breadcrumb">
+    <span onclick="goToPhase0()" style="cursor:pointer;color:#c0392b;">Portada</span>
+    &rsaquo; Policiales
+    &rsaquo; <span id="ph1-breadcrumb2">Personas desaparecidas — Zona Norte</span>
+  </div>
+
+  <div class="sub-content">
+    <div class="sub-section-title" id="ph1-title">Personas desaparecidas — Zona Norte</div>
+
+    <div class="sub-filter-bar">
+      <span>Mostrando <strong id="ph1-count">4</strong> resultados</span>
+      <span>·</span>
+      <span>Zona:</span>
+      <select id="ph1-filter" onchange="filterZone(this.value)">
+        <option value="norte">Zona Norte (GBA)</option>
+        <option value="caba">CABA</option>
+        <option value="interior">Interior</option>
+      </select>
+      <span>· Orden: más reciente</span>
+    </div>
+
+    <div class="sub-grid" id="ph1-grid">
+      <div class="sub-card" onclick="goToPhase2('san-fernando')">
+        <div class="sub-card-tag">Policiales · San Fernando</div>
+        <h3>Menor de 14 años desaparecido en San Fernando: 72 horas sin novedades</h3>
+        <p>La familia denuncia que la comisaría local demoró más de 48 horas en tomar la denuncia.</p>
+        <span class="link-btn">→ Leer nota completa</span>
+      </div>
+      <div class="sub-card" onclick="goToPhase2('adolescente-tigre')">
+        <div class="sub-card-tag">Policiales · Tigre</div>
+        <h3>Adolescente de 16 desaparece tras asistir a torneo escolar en Tigre</h3>
+        <p>Los compañeros afirman que fue visto hablando con un hombre de civil cerca del predio deportivo.</p>
+        <span class="link-btn">→ Leer nota completa</span>
+      </div>
+      <div class="sub-card" onclick="goToPhase2('escobar')">
+        <div class="sub-card-tag">Policiales · Escobar</div>
+        <h3>Vecinos de Escobar organizan búsqueda después de que las autoridades "cerraron el caso"</h3>
+        <p>A cuatro meses de la desaparición, la justicia archivó el expediente sin notificar a la familia.</p>
+        <span class="link-btn">→ Leer nota completa</span>
+      </div>
+      <div class="sub-card card-special" onclick="goToPhase2('luciano')">
+        <div class="sub-card-tag">● ACTUALIZACIÓN HOY · Don Torcuato</div>
+        <h3>El caso Luciano Ferreyra: un año sin respuestas y un expediente que "se perdió"</h3>
+        <p>El 19 de febrero de 2025 desapareció Luciano Ferreyra, 11 años. Su padre habla por primera vez.</p>
+        <span class="link-btn">→ COBERTURA ESPECIAL — Leer</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PHASE 2: ARTICLE ==================== -->
+<div id="phase-2" style="background:#fff;min-height:100vh;">
+
+  <div class="sub-header">
+    <div class="sub-header-logo" onclick="goToPhase0()">El Informador <span>Nacional</span></div>
+    <div class="sub-header-right">
+      <span>Jueves 19 feb. 2026 · 18°C</span>
+      <a onclick="openModal('login')">Iniciar sesión</a>
+      <a onclick="openModal('subscribe')" class="p0-subscribe">Suscribirse</a>
+    </div>
+  </div>
+
+  <nav class="sub-nav-bar">
+    <a onclick="showSection('portada')">Portada</a>
+    <a onclick="showSection('politica')">Política</a>
+    <a onclick="showSection('economia')">Economía</a>
+    <a onclick="showSection('mundo')">Mundo</a>
+    <a class="active" onclick="goToPhase1('Policiales','Policiales','Personas desaparecidas — Zona Norte')">Policiales</a>
+    <a onclick="showSection('sociedad')">Sociedad</a>
+    <a onclick="showSection('tecnologia')">Tecnología</a>
+    <a onclick="showSection('cultura')">Cultura</a>
+    <a onclick="showSection('deportes')">Deportes</a>
+    <a onclick="showSection('opinion')">Opinión</a>
+  </nav>
+
+  <div class="sub-breadcrumb">
+    <span onclick="goToPhase0()" style="cursor:pointer;color:#c0392b;">Portada</span>
+    &rsaquo;
+    <span onclick="goToPhase1('Policiales','Policiales','Personas desaparecidas — Zona Norte')" style="cursor:pointer;color:#c0392b;">Policiales</span>
+    &rsaquo;
+    <span onclick="goToPhase1('Policiales','Policiales','Personas desaparecidas — Zona Norte')" style="cursor:pointer;color:#c0392b;">Desapariciones zona norte</span>
+    &rsaquo; Caso Ferreyra
+  </div>
+
+  <div class="deep-content">
+    <div style="background:#fff0f0;border-left:4px solid var(--red);padding:12px 16px;margin-bottom:24px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8b1a1a;">
+      ⚠ NOTA DEL EDITOR: Esta investigación fue iniciada por nuestra redacción en junio de 2025. Dos periodistas involucrados en el caso han recibido amenazas. El expediente judicial fue clasificado bajo la Ley de Seguridad Nacional 24.059, lo cual impide la publicación de ciertos documentos. Publicamos lo que está legalmente permitido.
+    </div>
+
+    <h2>Un año después: la desaparición de Luciano Ferreyra y el silencio que nadie explica</h2>
+    <div class="meta">
+      Por Martín Castillo y Florencia Ibáñez · Investigación especial · 19 de febrero de 2026 · Actualizado 14:32 hs
+    </div>
+
+    <div class="deep-body">
+      <p>Exactamente hace un año, Marcelo Ferreyra salió de su trabajo en la municipalidad de Don Torcuato a las 17:30. Cuando llegó a su casa, su hijo Luciano, de 11 años, no estaba. La mochila del colegio seguía colgada en la percha de la entrada. El vaso de leche sobre la mesada, sin tocar.</p>
+
+      <p>Lo que siguió fue, según él mismo describe, "un laberinto diseñado para que te rindas".</p>
+
+      <p>"Fui a la comisaría esa misma noche. Me dijeron que tenía que esperar 48 horas para presentar la denuncia. Les dije que era un nene de 11 años y me preguntaron si era 'problemático'. No me voy a olvidar nunca de esa pregunta." Los ojos de Marcelo no se apartan de la mesa de la cocina mientras habla. Hay una foto de Luciano pegada con cinta en la heladera. Uniformado, sonriendo, con una pelota de fútbol bajo el brazo.</p>
+
+      <p>La denuncia finalmente fue tomada recién a las 53 horas de la desaparición. Para entonces, el rastro inmediato —cámaras, testimonios frescos, cualquier pista trazable— era prácticamente irrecuperable.</p>
+
+      <p>Lo que Ferreyra descubrió después es lo que convierte a este caso en algo que excede, con mucho, la crónica de una desaparición.</p>
+
+      <p>Al revisar el expediente —al que accedimos a través de una fuente judicial que prefiere el anonimato— encontramos algo inusual: <span class="anomaly-link" onclick="goToPhase2b()">cuatro páginas marcadas como "Anexo Reservado — Clasificación Delta"</span>. Una denominación que no existe en el nomenclador oficial de la justicia federal argentina.</p>
+
+      <p>"Clasificación Delta no es un término judicial", nos confirma una ex funcionaria de la Oficina Anticorrupción que conoce los protocolos de expedientes. "Es terminología que usa otro tipo de organismo."</p>
+
+      <p>Cuando intentamos solicitar esas páginas por vía formal, la respuesta llegó firmada por un funcionario del Ministerio de Seguridad de Nación que, según el organigrama público, no existe.</p>
+    </div>
+
+    <div class="related-box">
+      <h4>Archivos relacionados con este caso</h4>
+      <ul>
+        <li onclick="goToPhase2b()">▸ [ACCESO RESTRINGIDO] Expediente 2025-FED-0441-B — Caso Ferreyra</li>
+        <li onclick="goToPhase2b()">▸ Otros 6 casos similares en zona norte — Patrones comunes</li>
+        <li onclick="goToPhase2b()">▸ Mapa de desapariciones: cluster inusual en radio de 12 km</li>
+        <li onclick="goToPhase2b()">▸ Testimonio de testigo anónimo: "los vi subir a un móvil sin identificación"</li>
+      </ul>
+    </div>
+
+    <div class="deep-tags" style="margin-bottom:30px;">
+      <span class="tag" onclick="goToPhase2b()">CASO FERREYRA</span>
+      <span class="tag" onclick="goToPhase2b()">DESAPARICIONES ZONA NORTE</span>
+      <span class="tag" onclick="goToPhase2b()">CLASIFICACIÓN DELTA</span>
+      <span class="tag" onclick="goToPhase2b()">INVESTIGACIÓN ESPECIAL</span>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PHASE 2B: DEEPER ==================== -->
+<div id="phase-2b" style="display:none;background:#0e0c08;color:#c8b890;min-height:100vh;">
+  <div style="background:#0a0806;border-bottom:1px solid #2a1e08;padding:10px 40px;display:flex;align-items:center;justify-content:space-between;">
+    <span style="font-family:'Playfair Display',serif;font-size:20px;font-weight:900;color:#c8b890;cursor:pointer;" onclick="goToPhase0()">El Informador <span style="color:#8b2020;">Nacional</span></span>
+    <div style="display:flex;gap:20px;align-items:center;font-family:'IBM Plex Mono',monospace;font-size:11px;">
+      <span style="color:#5a4820;cursor:pointer;" onclick="goToPhase0()">← Portada</span>
+      <span style="color:#5a4820;cursor:pointer;" onclick="goToPhase1('Policiales','Policiales','Personas desaparecidas — Zona Norte')">← Policiales</span>
+      <span style="color:#5a4820;cursor:pointer;" onclick="goToPhase2('luciano')">← Caso Ferreyra</span>
+      <span style="color:#3a2e10;letter-spacing:0.08em;">ARCHIVO INTERNO · NIVEL 3 · SESSION #7741-B</span>
+    </div>
+  </div>
+
+  <div style="max-width:800px;margin:0 auto;padding:40px 24px;">
+    <div style="background:#1a1205;border:1px solid #3a2a10;padding:16px 20px;margin-bottom:30px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#8a6830;letter-spacing:0.05em;">
+      ADVERTENCIA: Está accediendo a material de investigación periodística no publicado. Su actividad en este portal está siendo registrada de acuerdo a nuestros términos de uso. Si usted es un funcionario público y accede a esta sección sin autorización judicial, quedará constancia legal.
+    </div>
+
+    <div style="font-family:'Special Elite',serif;font-size:11px;color:#5a4820;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:8px;">Archivo especial · Acceso restringido · Caso 0441</div>
+    <h2 style="font-family:'Playfair Display',serif;font-size:28px;color:#e8d8b0;margin-bottom:16px;line-height:1.2;">
+      Patrón anómalo: lo que une a los desaparecidos y por qué nadie habla
+    </h2>
+
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5a4820;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid #2a1e08;">
+      Redacción de investigación interna · Documento borrador · No publicar sin autorización del editor jefe
+    </div>
+
+    <div style="font-family:'Source Serif 4',serif;font-size:15px;line-height:1.9;color:#b8a880;">
+      <p style="margin-bottom:16px;">Después de seis meses de trabajo, hemos identificado diecisiete casos en un radio de doce kilómetros centrado en el partido de Tigre que comparten características imposibles de atribuir a la coincidencia.</p>
+
+      <p style="margin-bottom:16px;">Todos los desaparecidos tienen entre 9 y 16 años. Todos desaparecen en un rango horario de 16:00 a 19:30. Ninguno de los expedientes fue asignado al mismo juzgado que los anteriores. Y en todos los casos sin excepción, hay una nota en el expediente que refiere a una "derivación por protocolo especial" sin número de resolución asociado.</p>
+
+      <p style="margin-bottom:16px;">Cuando intentamos rastrear ese "protocolo especial", los tres funcionarios consultados dieron la misma respuesta, con variaciones mínimas: "Es un trámite administrativo estándar." Ninguno supo explicar en qué ley se basa.</p>
+
+      <p style="margin-bottom:16px;">Lo que sí pudimos confirmar es que tres de los casos tienen un denominador común en la actividad reciente de los padres: <span style="color:#c8a060;cursor:pointer;" onclick="goToPhase3()">todos trabajaban, o habían trabajado, en el complejo de antenas de Villa de Mayo</span>. Una instalación que figura en registros públicos como "infraestructura de telecomunicaciones del Estado" pero que no tiene sitio web, no aparece en ningún organigrama ministerial, y cuyas coordenadas exactas difieren entre Google Maps y los registros catastrales oficiales.</p>
+
+      <p style="margin-bottom:16px;">Nuestro fotógrafo, Sebastián G., intentó acercarse al perímetro para documentar el lugar. Al día siguiente, recibió una llamada desde un número privado. Una voz grabada, sin inflexión, le dijo tres palabras: <span style="color:#c84040;font-family:'Courier Prime',monospace;font-weight:700;">"No publicar. Gracias."</span></p>
+
+      <p style="margin-bottom:16px;">Sebastián renunció esa tarde.</p>
+
+      <p style="margin-bottom:16px;color:#888;font-style:italic;">Nota interna: El siguiente nivel de este archivo contiene los testimonios crudos y los documentos que no podemos publicar legalmente. Si llegás hasta acá, sabés lo que encontraste. Hacé <span style="color:#c8a060;text-decoration:underline;cursor:pointer;" onclick="goToPhase3()">click acá para continuar</span>. No se lo cuentes a nadie.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PHASE 3: TERMINAL GLITCH ==================== -->
+<div id="phase-3">
+  <div class="terminal-screen" id="terminal-content">
+    <div class="term-line term-dim" style="animation-delay:0s">// ========================================</div>
+    <div class="term-line term-dim" style="animation-delay:0.1s">// EL INFORMADOR NACIONAL — CMS v4.1.3</div>
+    <div class="term-line term-dim" style="animation-delay:0.2s">// ========================================</div>
+    <div class="term-line" style="animation-delay:0.5s"><span class="term-prompt">$</span> sudo access --level=delta --bypass-media-filter</div>
+    <div class="term-line term-warn" style="animation-delay:1.2s">ADVERTENCIA: Acceso a nivel Delta requiere autorización biométrica</div>
+    <div class="term-line term-prompt" style="animation-delay:1.8s">Sobrescribiendo restricción... [██████████] 100%</div>
+    <div class="term-line" style="animation-delay:2.5s"><span class="term-prompt">$</span> cat /archive/caso-0441/EXPEDIENTE_DELTA.txt</div>
+    <div class="term-line term-error" style="animation-delay:3.0s">ERROR 403: Archivo encriptado por orden ejecutiva 2024-11-SEC</div>
+    <div class="term-line" style="animation-delay:3.5s"><span class="term-prompt">$</span> decrypt --key=PERIODISMO_LIBRE_AR</div>
+    <div class="term-line term-bright" style="animation-delay:4.2s">Desencriptando... [██████▓░░░] 67%</div>
+    <div class="term-line term-bright" style="animation-delay:5.0s">Desencriptando... [█████████░] 94%</div>
+    <div class="term-line term-error" style="animation-delay:5.8s">INTERRUPCIÓN EXTERNA DETECTADA — Origen: 200.45.12.XXX</div>
+    <div class="term-line term-error" style="animation-delay:6.2s">Intento de acceso remoto bloqueado... intentando de nuevo...</div>
+    <div class="term-line term-prompt" style="animation-delay:7.0s">Desencriptando... [██████████] 100% — ÉXITO</div>
+    <div class="term-line" style="animation-delay:7.8s"> </div>
+    <div class="term-line term-warn" style="animation-delay:8.2s">═══════════════════════════════════════════</div>
+    <div class="term-line term-warn" style="animation-delay:8.5s">  ARCHIVO DESCLASIFICADO — SOLO LECTURA</div>
+    <div class="term-line term-warn" style="animation-delay:8.8s">═══════════════════════════════════════════</div>
+    <div class="term-line" style="animation-delay:9.5s"> </div>
+    <div class="term-line" style="animation-delay:10s">Este archivo no fue escrito por un periodista.</div>
+    <div class="term-line" style="animation-delay:11s">Fue escrito por mí.</div>
+    <div class="term-line" style="animation-delay:12s"> </div>
+    <div class="term-line" style="animation-delay:13s">Me llamo Marcelo Ferreyra.</div>
+    <div class="term-line" style="animation-delay:14s"> </div>
+    <div class="term-line" style="animation-delay:15s">Y mi hijo desapareció hace exactamente un año.</div>
+    <div class="term-line" style="animation-delay:16.5s"> </div>
+    <div class="term-line term-red" style="animation-delay:18s">Lo que encontré en ese año no tiene nombre todavía.</div>
+    <div class="term-line term-red" style="animation-delay:19.5s">Pero voy a contártelo.</div>
+    <div class="term-line" style="animation-delay:21s"> </div>
+    <div id="terminal-btn" style="display:none;">
+      <button class="continue-btn-dark" onclick="goToPhase4()">▶  Empezar desde el principio</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PHASE 4: VISUAL NOVEL ==================== -->
+<div id="phase-4">
+  <div class="noise-overlay"></div>
+  <div class="fade-overlay" id="fade-overlay"></div>
+
+  <div class="vn-map" id="vn-map">
+    <h4>📍 CAPÍTULO</h4>
+    <div class="vn-map-item" id="map-1">I. La última noche normal</div>
+    <div class="vn-map-item" id="map-2">II. El laberinto</div>
+    <div class="vn-map-item" id="map-3">III. La antena</div>
+    <div class="vn-map-item" id="map-4">IV. Ellos</div>
+    <div class="vn-map-item" id="map-5">V. El fondo</div>
+  </div>
+
+  <!-- VN ATMOSPHERE container -->
+  <div class="vn-atmosphere" id="vn-atmosphere"></div>
+
+  <!-- Floating chapter title -->
+  <div class="floating-text" id="floating-title"></div>
+
+  <!-- ---- SCENE 1: HOME NIGHT ---- -->
+  <div class="vn-scene active" id="scene-1">
+    <div class="vn-bg vn-bg-home" id="bg-1">
+      <div class="star-field" id="stars-1"></div>
+    </div>
+    <div class="vn-chapter"><div class="vn-chapter-text">I — La última noche normal</div></div>
+    <div class="vn-character" style="right:15%;font-size:100px;">🏚</div>
+    <div class="vn-textbox" >
+      <div class="vn-speaker speaker-narrador">— narrador —</div>
+      <div class="vn-text">19 de febrero de 2025. Son las 17:47. Entro a casa y el primer pensamiento que tengo es que algo huele a quemado. Después me doy cuenta de que es el pan en el horno. Lo apago. Llamo a Luciano.<span class="vn-cursor"></span></div>
+      <div class="vn-advance">[ enter ]</div>
+    </div>
+  </div>
+
+  <!-- ---- SCENE 2 ---- -->
+  <div class="vn-scene" id="scene-2">
+    <div class="vn-bg vn-bg-home"></div>
+    <div class="vn-chapter"><div class="vn-chapter-text">I — La última noche normal</div></div>
+    <div class="vn-textbox" >
+      <div class="vn-speaker speaker-yo">— yo —</div>
+      <div class="vn-text">Luciano. Luci. ¿Estás en tu cuarto?<span class="vn-cursor"></span></div>
+      <div class="vn-advance">[ enter ]</div>
+    </div>
+  </div>
+
+  <!-- ---- SCENE 3 ---- -->
+  <div class="vn-scene" id="scene-3">
+    <div class="vn-bg vn-bg-home"></div>
+    <div class="vn-chapter"><div class="vn-chapter-text">I — La última noche normal</div></div>
+    <div class="vn-textbox" >
+      <div class="vn-speaker speaker-narrador">— narrador —</div>
+      <div class="vn-text">Silencio. El tipo de silencio que tiene un peso específico. No es el silencio de alguien que tiene los auriculares puestos. No es el silencio de alguien que duerme. Entro al cuarto. La cama sin deshacer. La mochila en la silla. Todo en su lugar.<span class="vn-cursor"></span></div>
+      <div class="vn-advance">[ enter ]</div>
+    </div>
+  </div>
+
+  <!-- ---- SCENE 4 ---- -->
+  <div class="vn-scene" id="scene-4">
+    <div class="vn-bg vn-bg-home"></div>
+    <div class="vn-chapter"><div class="vn-chapter-text">I — La última noche normal</div></div>
+    <div class="vn-textbox" >
+      <div class="vn-speaker speaker-narrador">— narrador —</div>
+      <div class="vn-text">Todo en su lugar. Excepto él. Llamo al celular. Timbra en el cajón de la mesita de luz. Lo veo vibrar entre un par de medias y una estampita de San Expedito que me regaló su abuela. Luciano nunca salía sin el celular.<span class="vn-cursor"></span></div>
+      <div class="vn-advance">[ enter ]</div>
+    </div>
+  </div>
+
+  <!-- ---- SCENE 5: RAIN/POLICE ---- -->
+  <div class="vn-scene" id="scene-5">
+    <div class="vn-bg vn-bg-rain" id="bg-5">
+      <canvas id="rain-canvas" style="position:absolute;top:0;left:0;width:100%;height:100%;"></canvas>
+    </div>
+    <div class="vn-chapter"><div class="vn-chapter-text">II — El laberinto</div></div>
+    <div class="vn-textbox" >
+      <div class="vn-speaker speaker-narrador">— narrador —</div>
+      <div class="vn-text">Esa noche llovió. Fui a la comisaría a las 19:30. El oficial de guardia me escuchó con cara de aburrimiento, masticando chicle. Me dijo que el protocolo era esperar 48 horas. Que los chicos a veces se van de casa. Que era "estadísticamente normal".<span class="vn-cursor"></span></div>
+      <div class="vn-advance">[ enter ]</div>
+    </div>
+  </div>
+
+  <!-- ---- SCENE 6 ---- -->
+  <div class="vn-scene" id="scene-6">
+    <div class="vn-bg vn-bg-rain"></div>
+    <div class="vn-chapter"><div class="vn-chapter-text">II — El laberinto</div></div>
+    <div class="vn-textbox" >
+      <div class="vn-speaker speaker-yo">— yo —</div>
+      <div class="vn-text">Tiene 11 años. No se va de casa. Está en quinto grado. Tiene partidos de fútbol los sábados y tiene miedo a las arañas. No se va de casa.<span class="vn-cursor"></span></div>
+      <div class="vn-advance">[ enter ]</div>
+    </div>
+  </div>
+
+  <!-- ---- SCENE 7 ---- -->
+  <div class="vn-scene" id="scene-7">
+    <div class="vn-bg vn-bg-rain"></div>
+    <div class="vn-chapter"><div class="vn-chapter-text">II — El laberinto</div></div>
+    <div class="vn-textbox" >
+      <div class="vn-speaker speaker-detective">— oficial Paredes —</div>
+      <div class="vn-text">Mire señor... ¿Ferreyra? Mire, Ferreyra. Tenemos cuarenta y pico de denuncias esta semana. Si me llama a las 48 horas y sigue sin aparecer, tomamos la denuncia. ¿Tiene el número de acá?<span class="vn-cursor"></span></div>
+      <div class="vn-advance">[ enter ]</div>
+    </div>
+  </div>
+
+  <!-- ---- SCENE 8 ---- -->
+  <div class="vn-scene" id="scene-8">
+    <div class="vn-bg vn-bg-rain"></div>
+    <div class="vn-chapter"><div class="vn-chapter-text">II — El laberinto</div></div>
+    <div class="vn-textbox" >
+      <div class="vn-speaker speaker-narrador">— narrador —</div>
+      <div class="vn-text">Volví al otro día. Y al siguiente. Me tomaron la denuncia al tercer intento. El expediente fue asignado al juzgado número 4 de San Martín, que al mes siguiente fue "reorganizado por carga procesal". El expediente pasó al juzgado 7. El juzgado 7 no encontró el expediente durante tres semanas. Cuando apareció, faltaban páginas.<span class="vn-cursor"></span></div>
+      <div class="vn-advance">[ enter ]</div>
+    </div>
+  </div>
+
+  <!-- ---- SCENE 9 ---- -->
+  <div class="vn-scene" id="scene-9">
+    <div class="vn-bg vn-bg-rain"></div>
+    <div class="vn-chapter"><div class="vn-chapter-text">II — El laberinto</div></div>
+    <div class="vn-textbox" >
+      <div class="vn-speaker speaker-narrador">— narrador —</div>
+      <div class="vn-text">Cuatro meses después encontré algo. Una vecina, doña Pereira, me dijo que había visto a Luciano ese día. Saliendo del kiosco. Caminando en dirección a la calle Malvinas. Y detrás de él, a un kilómetro: las antenas.<span class="vn-cursor"></span></div>
+      <div class="vn-advance">[ enter ]</div>
+    </div>
+  </div>
+
+  <!-- ---- SCENE 10: OFFICE/ANTENNA ---- -->
+  <div class="vn-scene" id="scene-10">
+    <div class="vn-bg vn-bg-office"></div>
+    <div class="vn-chapter"><div class="vn-chapter-text">III — La antena</div></div>
+    <div class="vn-textbox" >
+      <div class="vn-speaker speaker-narrador">— narrador —</div>
+      <div class="vn-text">El complejo de Villa de Mayo tiene cuatro antenas de entre cuarenta y sesenta metros. Están ahí desde los años setenta. Figuran como "infraestructura de comunicaciones del INVAP". Cuando llamé al INVAP, me dijeron que no les pertenece. Cuando llamé al Ministerio de Defensa, me cortaron a los cuarenta segundos.<span class="vn-cursor"></span></div>
+      <div class="vn-advance">[ enter ]</div>
+    </div>
+  </div>
+
+  <!-- ---- SCENE 11 ---- -->
+  <div class="vn-scene" id="scene-11">
+    <div class="vn-bg vn-bg-office"></div>
+    <div class="vn-chapter"><div class="vn-chapter-text">III — La antena</div></div>
+    <div class="vn-textbox" >
+      <div class="vn-speaker speaker-narrador">— narrador —</div>
+      <div class="vn-text">Un ex compañero de trabajo, Jorge, me pasó un nombre. Me dijo que lo buscara pero que no le dijera que él me lo había dado. El nombre era Darío Quintana. Un tipo que había trabajado en el complejo en los noventa y que después "desapareció de todo". De las listas, de las redes, de la guía telefónica.<span class="vn-cursor"></span></div>
+      <div class="vn-advance">[ enter ]</div>
+    </div>
+  </div>
+
+  <!-- ---- SCENE 12 ---- -->
+  <div class="vn-scene" id="scene-12">
+    <div class="vn-bg vn-bg-office"></div>
+    <div class="vn-chapter"><div class="vn-chapter-text">III — La antena</div></div>
+    <div class="vn-textbox" >
+      <div class="vn-speaker speaker-narrador">— narrador —</div>
+      <div class="vn-text">Tardé tres meses en encontrar a Darío Quintana. Vivía en una pensión en Quilmes. No tenía teléfono. Cuando le mostré la foto de las antenas, se puso blanco. Tomó su mate, lo giró lentamente en las manos, y me dijo algo que todavía no termino de procesar.<span class="vn-cursor"></span></div>
+      <div class="vn-advance">[ enter ]</div>
+    </div>
+  </div>
+
+  <!-- ---- SCENE 13 ---- -->
+  <div class="vn-scene" id="scene-13">
+    <div class="vn-bg vn-bg-office"></div>
+    <div class="vn-chapter"><div class="vn-chapter-text">III — La antena</div></div>
+    <div class="vn-textbox" >
+      <div class="vn-speaker speaker-hombre">— Darío Quintana —</div>
+      <div class="vn-text">Eso no es del INVAP. No es del Ejército. No es de ningún organismo argentino. Yo trabajé ahí tres años y nunca supe quién pagaba los sueldos. Nos los depositaban en una cuenta en el Banco Nación pero el número de orden de pago era de otra repartición. Una que cuando fui a buscarla al organigrama... no estaba. Nunca había estado.<span class="vn-cursor"></span></div>
+      <div class="vn-advance">[ enter ]</div>
+    </div>
+  </div>
+
+  <!-- ---- SCENE 14 ---- -->
+  <div class="vn-scene" id="scene-14">
+    <div class="vn-bg vn-bg-office"></div>
+    <div class="vn-chapter"><div class="vn-chapter-text">III — La antena</div></div>
+    <div class="vn-textbox" >
+      <div class="vn-speaker speaker-hombre">— Darío Quintana —</div>
+      <div class="vn-text">Una noche me quedé a trabajar hasta tarde. Hubo un corte de luz en el sector B. Cuando volví la energía, las pantallas tardaron en reiniciarse. Y por un segundo, un segundo nomás, vi la pantalla de inicio. No decía nada en español. No decía nada en inglés. Decía algo en... no sé qué idioma era. Nunca lo pude identificar.<span class="vn-cursor"></span></div>
+      <div class="vn-advance">[ enter ]</div>
+    </div>
+  </div>
+
+  <!-- ---- SCENE 15: REVELATION ---- -->
+  <div class="vn-scene" id="scene-15">
+    <div class="vn-bg vn-bg-morgue"></div>
+    <div class="vn-chapter"><div class="vn-chapter-text">IV — Ellos</div></div>
+    <div class="vn-textbox" >
+      <div class="vn-speaker speaker-narrador">— narrador —</div>
+      <div class="vn-text">Volví a los expedientes. Busqué los otros casos. Los dieciséis chicos. Había algo que todos los artículos sobre ellos omitían, algo que solo notás cuando los ves todos juntos: en todos los reportes, en todos sin excepción, hay una misma frase. "El área fue inspeccionada sin hallazgos relevantes salvo interferencia electromagnética de origen indeterminado."<span class="vn-cursor"></span></div>
+      <div class="vn-advance">[ enter ]</div>
+    </div>
+  </div>
+
+  <!-- ---- SCENE 16 ---- -->
+  <div class="vn-scene" id="scene-16">
+    <div class="vn-bg vn-bg-morgue"></div>
+    <div class="vn-chapter"><div class="vn-chapter-text">IV — Ellos</div></div>
+    <div class="vn-textbox" >
+      <div class="vn-speaker speaker-narrador">— narrador —</div>
+      <div class="vn-text">Interferencia electromagnética. Dieciséis casos. Mismo radio. Misma franja horaria. Mismo texto. Un copy-paste en los informes de diecisiete juzgados distintos, a lo largo de tres años. Alguien puso esa frase ahí. Alguien coordinó eso. Y eso no es algo que hace una comisaría de provincia.<span class="vn-cursor"></span></div>
+      <div class="vn-advance">[ enter ]</div>
+    </div>
+  </div>
+
+  <!-- ---- SCENE 17 ---- -->
+  <div class="vn-scene" id="scene-17">
+    <div class="vn-bg vn-bg-morgue"></div>
+    <div class="vn-chapter"><div class="vn-chapter-text">IV — Ellos</div></div>
+    <div class="vn-textbox" >
+      <div class="vn-speaker speaker-ella">— Elena, periodista —</div>
+      <div class="vn-text">Marcelo, lo que me estás diciendo es que hay una operación coordinada entre el poder judicial provincial, Seguridad de Nación, y una instalación sin filiación legal conocida. ¿Tenés idea de lo que eso implica? ¿Sabés quién tiene el nivel de acceso para hacer eso?<span class="vn-cursor"></span></div>
+      <div class="vn-advance">[ enter ]</div>
+    </div>
+  </div>
+
+  <!-- ---- SCENE 18 ---- -->
+  <div class="vn-scene" id="scene-18">
+    <div class="vn-bg vn-bg-morgue"></div>
+    <div class="vn-chapter"><div class="vn-chapter-text">IV — Ellos</div></div>
+    <div class="vn-textbox" >
+      <div class="vn-speaker speaker-yo">— yo —</div>
+      <div class="vn-text">Sí. Tengo idea. Encontré algo más. Un documento filtrado. Una firma al pie de un memo interno. El sello decía: "SAD/CIA-LATAM/Ops-SubF-7". Subproyecto F. F de Fenómeno. Es lo que ellos llaman internamente a los chicos que desaparecen cerca de las antenas. Los llaman Fenómenos.<span class="vn-cursor"></span></div>
+      <div class="vn-advance">[ enter ]</div>
+    </div>
+  </div>
+
+  <!-- ---- SCENE 19: WOODS ---- -->
+  <div class="vn-scene" id="scene-19">
+    <div class="vn-bg vn-bg-woods"></div>
+    <div class="vn-chapter"><div class="vn-chapter-text">IV — Ellos</div></div>
+    <div class="vn-textbox" >
+      <div class="vn-speaker speaker-narrador">— narrador —</div>
+      <div class="vn-text">La noche que fui al complejo, fui solo. Eran las 2:40 de la madrugada. Corté el alambrado con una pinza que compré en el Mercado Central. El pasto adentro estaba cortado prolijamente. Había luz en el edificio central. Y había algo más. Un sonido. No era mecánico. No era eléctrico. Era como una frecuencia que no escuchás con las orejas. La sentís en el pecho.<span class="vn-cursor"></span></div>
+      <div class="vn-advance">[ enter ]</div>
+    </div>
+  </div>
+
+  <!-- ---- SCENE 20 ---- -->
+  <div class="vn-scene" id="scene-20">
+    <div class="vn-bg vn-bg-woods"></div>
+    <div class="vn-chapter"><div class="vn-chapter-text">IV — Ellos</div></div>
+    <div class="vn-textbox" >
+      <div class="vn-speaker speaker-narrador">— narrador —</div>
+      <div class="vn-text">Llegué a una ventana lateral. Adentro vi pantallas. Muchas pantallas. Y personas trabajando. Con trajes que no eran militares. No eran guardias. Eran como científicos, excepto que ninguno miraba hacia arriba. Todos miraban hacia abajo. Hacia algo que estaba bajo el piso. Un sótano. Una profundidad.<span class="vn-cursor"></span></div>
+      <div class="vn-advance">[ enter ]</div>
+    </div>
+  </div>
+
+  <!-- ---- SCENE 21 ---- -->
+  <div class="vn-scene" id="scene-21">
+    <div class="vn-bg vn-bg-woods"></div>
+    <div class="vn-chapter"><div class="vn-chapter-text">IV — Ellos</div></div>
+    <div class="vn-textbox" >
+      <div class="vn-speaker speaker-narrador">— narrador —</div>
+      <div class="vn-text">Y entonces la frecuencia paró. Y en el silencio, escuché una voz. Una sola voz. Desde algún lugar debajo de mí. No era adulta. Era la voz de un nene. No decía palabras. Repetía un número. El mismo número. Una y otra vez. Era el número del DNI de Luciano.<span class="vn-cursor"></span></div>
+      <div class="vn-advance">[ enter ]</div>
+    </div>
+  </div>
+
+  <!-- ---- CHOICE SCENE ---- -->
+  <div class="vn-scene" id="scene-22">
+    <div class="vn-bg vn-bg-woods"></div>
+    <div class="vn-chapter"><div class="vn-chapter-text">IV — Ellos</div></div>
+    <div class="vn-choices" id="choice-22" style="display:none;">
+      <h3>¿Qué hago?</h3>
+      <button class="choice-btn" onclick="choiceSelect(23)">Intentar entrar al sótano</button>
+      <button class="choice-btn" onclick="choiceSelect(23)">Sacar fotos y salir antes de que me vean</button>
+      <button class="choice-btn" onclick="choiceSelect(23)">Quedarme paralizado, escuchando su voz</button>
+    </div>
+    <div class="vn-textbox" style="min-height:60px;cursor:default;">
+      <div class="vn-text" style="font-size:15px;color:#888;font-style:italic;">Tomá una decisión...</div>
+    </div>
+  </div>
+
+  <!-- ---- SCENE 23: UFO ---- -->
+  <div class="vn-scene" id="scene-23">
+    <div class="vn-bg vn-bg-ufo" id="bg-ufo">
+      <div class="star-field" id="stars-ufo"></div>
+    </div>
+    <div class="vn-chapter"><div class="vn-chapter-text">V — El fondo</div></div>
+    <div class="vn-textbox" >
+      <div class="vn-speaker speaker-narrador">— narrador —</div>
+      <div class="vn-text">No llegué a decidir. Una mano me agarró del hombro desde atrás. Me giré. Era un hombre de unos cincuenta años, traje oscuro, sin insignias. Cara de no haber dormido en semanas. Me habló en voz muy baja, en castellano perfecto con un acento que no pude ubicar.<span class="vn-cursor"></span></div>
+      <div class="vn-advance">[ enter ]</div>
+    </div>
+  </div>
+
+  <!-- ---- SCENE 24 ---- -->
+  <div class="vn-scene" id="scene-24">
+    <div class="vn-bg vn-bg-ufo"></div>
+    <div class="vn-chapter"><div class="vn-chapter-text">V — El fondo</div></div>
+    <div class="vn-textbox" >
+      <div class="vn-speaker speaker-hombre">— el hombre —</div>
+      <div class="vn-text">No grite. No corra. Le juro que no le voy a hacer daño. Yo también estoy buscando a alguien. Tengo una hija. Desapareció hace tres años en Nuevo México. La encontré en un lugar como este. Y lo que encontré... lo que hay abajo... señor Ferreyra, lo que hay abajo no vino de acá.<span class="vn-cursor"></span></div>
+      <div class="vn-advance">[ enter ]</div>
+    </div>
+  </div>
+
+  <!-- ---- SCENE 25 ---- -->
+  <div class="vn-scene" id="scene-25">
+    <div class="vn-bg vn-bg-ufo"></div>
+    <div class="vn-chapter"><div class="vn-chapter-text">V — El fondo</div></div>
+    <div class="vn-textbox" >
+      <div class="vn-speaker speaker-yo">— yo —</div>
+      <div class="vn-text">¿Qué? ¿Qué significa que no vino de acá?<span class="vn-cursor"></span></div>
+      <div class="vn-advance">[ enter ]</div>
+    </div>
+  </div>
+
+  <!-- ---- SCENE 26 ---- -->
+  <div class="vn-scene" id="scene-26">
+    <div class="vn-bg vn-bg-ufo"></div>
+    <div class="vn-chapter"><div class="vn-chapter-text">V — El fondo</div></div>
+    <div class="vn-textbox" >
+      <div class="vn-speaker speaker-hombre">— el hombre —</div>
+      <div class="vn-text">La tecnología. El proyecto. Los niños. Lo que hacen con las frecuencias. El acuerdo lleva cuarenta años. Cuatro gobiernos distintos, en cuatro países distintos. Lo firmaron sin que nadie lo votara. Sin que nadie lo supiera. Porque la otra parte del acuerdo no se sienta en ningún congreso de ningún país de este planeta.<span class="vn-cursor"></span></div>
+      <div class="vn-advance">[ enter ]</div>
+    </div>
+  </div>
+
+  <!-- ---- SCENE 27: BUNKER ---- -->
+  <div class="vn-scene" id="scene-27">
+    <div class="vn-bg vn-bg-bunker"></div>
+    <div class="vn-chapter"><div class="vn-chapter-text">V — El fondo</div></div>
+    <div class="vn-textbox" >
+      <div class="vn-speaker speaker-narrador">— narrador —</div>
+      <div class="vn-text">Me mostró un documento. Membrete en la parte superior: "JOINT PROTOCOL — SUBTERRANEAN ASSETS — CLASSIFIED ABOVE TS/SCI". Fecha: 14 de octubre de 1983. Firmado por tres personas cuyos nombres estaban tachados. Y al pie, un símbolo. No era una bandera. No era un logo. Era algo que no había visto antes pero que, de alguna manera, reconocí.<span class="vn-cursor"></span></div>
+      <div class="vn-advance">[ enter ]</div>
+    </div>
+  </div>
+
+  <!-- ---- SCENE 28 ---- -->
+  <div class="vn-scene" id="scene-28">
+    <div class="vn-bg vn-bg-bunker"></div>
+    <div class="vn-chapter"><div class="vn-chapter-text">V — El fondo</div></div>
+    <div class="vn-textbox" >
+      <div class="vn-speaker speaker-sistema">— sistema —</div>
+      <div class="vn-text" style="color:#a060c8;">MOVIMIENTO DETECTADO EN PERIMETRO SECTOR 4. INICIANDO PROTOCOLO DE CONTENCIÓN. SUJETOS NO AUTORIZADOS: DOS. RANGO ETARIO: ADULTO. PRIORIDAD: BAJA. ACCIÓN: NEUTRALIZAR Y RECLASIFICAR.<span class="vn-cursor"></span></div>
+      <div class="vn-advance">[ enter ]</div>
+    </div>
+  </div>
+
+  <!-- ---- SCENE 29 ---- -->
+  <div class="vn-scene" id="scene-29">
+    <div class="vn-bg vn-bg-bunker"></div>
+    <div class="vn-chapter"><div class="vn-chapter-text">V — El fondo</div></div>
+    <div class="vn-textbox" >
+      <div class="vn-speaker speaker-narrador">— narrador —</div>
+      <div class="vn-text">Las luces del complejo se apagaron todas al mismo tiempo. En la oscuridad completa, se escuchó el mismo sonido de antes. La frecuencia. Pero esta vez no en el pecho. Esta vez adentro del cráneo. El hombre agarró mi brazo y corrimos. Atrás de nosotros, una luz. Una luz que no venía de ninguna lámpara.<span class="vn-cursor"></span></div>
+      <div class="vn-advance">[ enter ]</div>
+    </div>
+  </div>
+
+  <!-- ---- SCENE 30: FINAL ---- -->
+  <div class="vn-scene" id="scene-30">
+    <div class="vn-bg vn-bg-ufo"></div>
+    <div class="vn-chapter"><div class="vn-chapter-text">V — El fondo</div></div>
+    <div class="vn-textbox" >
+      <div class="vn-speaker speaker-narrador">— narrador —</div>
+      <div class="vn-text">Salí del alambrado. Corrí hasta el auto. Manejé cuarenta minutos sin parar una sola vez en ningún semáforo. Cuando llegué a casa, me temblaban las manos. Me senté en la mesa de la cocina. Miré la foto de Luciano en la heladera. Y pensé que si esto que sé es cierto, si lo que ese hombre me mostró es real, entonces no hay fiscalía. No hay periodista. No hay institución a la que pueda ir.<span class="vn-cursor"></span></div>
+      <div class="vn-advance">[ enter ]</div>
+    </div>
+  </div>
+
+  <!-- ---- SCENE 31: FINAL WORDS ---- -->
+  <div class="vn-scene" id="scene-31">
+    <div class="vn-bg vn-bg-ufo"></div>
+    <div class="vn-textbox" >
+      <div class="vn-speaker speaker-narrador">— narrador —</div>
+      <div class="vn-text">Así que escribí esto. Acá, en el único lugar donde podía esconderlo a la vista de todos: dentro de un sitio de noticias que nadie lee hasta el final. Dejo los documentos en el servidor. Quien llegue hasta acá, ya sabe dónde buscar. El complejo de Villa de Mayo. Sector 4. Abajo del suelo.<br><br>Y si mañana esto desaparece, si el sitio deja de funcionar, si yo dejo de atender el teléfono: ya sabés por qué.<span class="vn-cursor"></span></div>
+      <div class="vn-advance">[ enter ]</div>
+    </div>
+  </div>
+
+  <!-- ---- SCENE 32: END ---- -->
+  <div class="vn-scene" id="scene-32">
+    <div class="vn-bg vn-bg-ufo"></div>
+    <div class="vn-textbox" style="cursor:default;text-align:center;padding:50px 40px;">
+      <div style="font-family:'Special Elite',serif;font-size:11px;letter-spacing:0.3em;color:#555;text-transform:uppercase;margin-bottom:24px;">Fin</div>
+      <div style="font-family:'Playfair Display',serif;font-size:28px;color:#c8a060;margin-bottom:16px;font-style:italic;">Luciano Ferreyra<br><span style="font-size:16px;color:#888;">2013 — ¿?</span></div>
+      <div style="font-family:'Courier Prime',monospace;font-size:14px;color:#666;max-width:500px;margin:0 auto 30px;line-height:1.8;">Esta es una historia de ficción. Pero las preguntas que plantea no lo son. En Argentina, miles de personas desaparecen cada año. La mayoría de los casos nunca se resuelven.</div>
+      <button class="continue-btn-dark" onclick="window.location.reload()" style="font-size:12px;">↩ Volver al principio</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ============ GLOBAL STATE ============
+let vnActive = false;
+
+// ============ ARTICLE & SECTION DATA ============
+
+const ARTICLES = {
+  bcra: {
+    tag: 'Economía nacional',
+    title: 'El Banco Central eleva la tasa de referencia al 48% en medio de la crisis cambiaria',
+    deck: 'La medida, anunciada tras una reunión de emergencia del directorio, busca contener la presión cambiaria que amenaza con superar el pico histórico de diciembre pasado.',
+    meta: 'Por Valentina Rossi · Economía · 19 de febrero de 2026 · Actualizado 14:23 hs',
+    imgcap: 'Sede del BCRA en Buenos Aires. (Foto: Télam)',
+    body: `<p>El Banco Central de la República Argentina (BCRA) anunció ayer por la tarde una suba de la tasa de referencia de cuatro puntos porcentuales, ubicándola en el 48% anual, en lo que representa la tercera modificación en menos de dos meses.</p>
+    <p>La decisión fue tomada en una reunión extraordinaria del directorio que se extendió por más de tres horas y que, según fuentes de la institución, contó con la participación directa del ministro de Economía vía videoconferencia desde Ginebra, donde se encuentra en reuniones con el FMI.</p>
+    <p>"Las condiciones macroeconómicas nos obligan a tomar medidas contundentes para preservar las reservas", sostuvo el presidente del organismo en una conferencia de apenas doce minutos, sin abrir el micrófono a preguntas.</p>
+    <p>Analistas del sector advierten que el encarecimiento del crédito podría ahogar a las PyMEs en plena temporada baja. "Es una señal de que el BCRA está actuando de manera reactiva, no preventiva", señaló el economista Rodrigo Almeida, del Instituto de Estudios Fiscales.</p>
+    <p>En el mercado paralelo, el dólar tocó los $1.920 en las primeras horas de la rueda de hoy, antes de retroceder levemente hasta los $1.894 al cierre.</p>`
+  },
+  coalicion: {
+    tag: 'Política',
+    title: 'La coalición oficialista pierde tres escaños clave en la Cámara de Diputados',
+    deck: 'Tres legisladores anunciaron su pase a un bloque independiente, complicando el panorama legislativo para el segundo semestre.',
+    meta: 'Por Diego Azcurra · Política · 19 de febrero de 2026 · 13:10 hs',
+    imgcap: 'Cámara de Diputados de la Nación, Buenos Aires. (Foto: NA)',
+    body: `<p>La bancada oficial sufrió ayer un golpe político de proporciones cuando tres de sus legisladores más experimentados anunciaron en forma conjunta su decisión de abandonar el bloque para conformar un espacio independiente denominado "Compromiso Federal".</p>
+    <p>Los diputados implicados son Marcela Suárez (Entre Ríos), Rodrigo Catán (Mendoza) y Hernán Villanueva (Corrientes), quienes representaban votos críticos para la aprobación de la reforma previsional prevista para el próximo mes.</p>
+    <p>"No nos vamos del gobierno, nos vamos de una conducción que nos ningunea y que toma decisiones sin consultar al interior del país", dijo Suárez en declaraciones a Radio Rivadavia.</p>
+    <p>El oficialismo perdería así la mayoría simple que necesita para avanzar con su agenda legislativa sin negociar con la oposición.</p>`
+  },
+  dolar: {
+    tag: 'Economía',
+    title: 'El dólar libre supera la barrera histórica de los $1.900',
+    deck: 'El billete norteamericano tocó un nuevo máximo en el mercado informal, en medio de la incertidumbre por las negociaciones con el Fondo.',
+    meta: 'Por Lucía Ferraro · Economía · 19 de febrero de 2026 · 11:48 hs',
+    imgcap: 'Casas de cambio en el microcentro porteño. (Foto: TELAM)',
+    body: `<p>El dólar informal cerró este jueves con una suba de $42 respecto del día anterior, tocando los $1.900 en la primera rueda de la semana. Se trata de un nuevo máximo histórico en términos nominales, aunque en términos reales todavía se ubica por debajo del pico de marzo de 2024.</p>
+    <p>La brecha con el tipo de cambio oficial se amplió al 63%, la mayor distancia registrada desde diciembre pasado, cuando una corrida forzó al entonces ministro de Economía a renunciar en forma intempestiva.</p>
+    <p>Operadores del mercado atribuyeron el movimiento a la incertidumbre generada por las negociaciones en curso con el FMI, cuyo staff técnico se reunirá con autoridades argentinas la semana próxima en Washington.</p>`
+  },
+  paro: {
+    tag: 'Sociedad',
+    title: 'Gremios docentes anuncian paro nacional para la semana próxima',
+    deck: 'CTERA y otros cinco sindicatos de la educación reclaman una recomposición salarial de emergencia ante la pérdida del poder adquisitivo.',
+    meta: 'Por Fernanda Goytía · Sociedad · 19 de febrero de 2026 · 10:30 hs',
+    imgcap: 'Manifestación docente frente al Ministerio de Educación. (Foto: Télam)',
+    body: `<p>La Confederación de Trabajadores de la Educación (CTERA) y otros cinco gremios del sector anunciaron ayer un paro nacional de 48 horas para los días 25 y 26 de febrero, a dos semanas del inicio del ciclo lectivo.</p>
+    <p>La medida de fuerza apunta a presionar al gobierno nacional para que convoque con urgencia a una paritaria de emergencia. Según los sindicatos, los salarios docentes perdieron un 34% de su valor real en los últimos doce meses.</p>
+    <p>"No podemos empezar el año sin una propuesta concreta. Nuestros compañeros no llegan a fin de mes", dijo Roberto Núñez, secretario general de CTERA, en conferencia de prensa.</p>
+    <p>El Ministerio de Educación emitió un escueto comunicado en el que señaló que "el diálogo está abierto" y convocó a las partes a una reunión el próximo lunes.</p>`
+  },
+  malvinas: {
+    tag: 'Mundo',
+    title: 'Tensión en el Atlántico Sur: maniobras militares a 200 km de las Malvinas',
+    deck: 'El Ministerio de Defensa convocó al embajador británico tras detectar movimientos navales no comunicados en aguas próximas al archipiélago.',
+    meta: 'Por Santiago Ríos · Mundo · 19 de febrero de 2026 · 09:15 hs',
+    imgcap: 'Fragata ARA Heroína en el Atlántico Sur. (Foto: Armada Argentina)',
+    body: `<p>El Ministerio de Defensa de la Nación convocó formalmente al embajador del Reino Unido en Buenos Aires para exigir explicaciones por las maniobras navales detectadas en el Atlántico Sur, a aproximadamente 200 kilómetros al norte de las Islas Malvinas.</p>
+    <p>Según fuentes del ministerio, los movimientos fueron identificados por el sistema de monitoreo satelital VIGIA a las 03:40 del miércoles e involucraron al menos dos fragatas de la Royal Navy y un submarino de propulsión nuclear.</p>
+    <p>El canciller argentino calificó la situación de "inaceptable" y recordó que el archipiélago es territorio argentino bajo ocupación ilegal británica. "No admitiremos provocaciones en nuestra plataforma continental", señaló en declaraciones a la prensa.</p>
+    <p>Londres no emitió comentarios hasta el cierre de esta edición.</p>`
+  },
+  fibra: {
+    tag: 'Tecnología',
+    title: 'Argentina firma acuerdo con consorcio europeo para fibra óptica submarina',
+    deck: 'El convenio contempla una inversión de 2.300 millones de dólares y promete conectividad de última generación para el litoral patagónico antes de 2028.',
+    meta: 'Por Paula Méndez · Tecnología · 19 de febrero de 2026 · 08:40 hs',
+    imgcap: 'Firma del acuerdo en el Salón Blanco de Casa Rosada. (Foto: Presidencia)',
+    body: `<p>El gobierno argentino firmó ayer un convenio de cooperación tecnológica con el consorcio europeo SubConnect, integrado por empresas de Francia, Alemania y los Países Bajos, para el tendido de un cable de fibra óptica submarina que conectará el litoral patagónico con Europa a través de una nueva ruta por el Atlántico Sur.</p>
+    <p>La inversión total asciende a 2.300 millones de dólares y contempla la instalación de estaciones de aterrizaje en Puerto Madryn, Comodoro Rivadavia y Río Gallegos. Se estima que la infraestructura estará operativa antes de 2028.</p>
+    <p>"Este acuerdo nos pone a la vanguardia de la conectividad regional y nos independiza del histórico monopolio de rutas que pasan por Brasil", dijo el secretario de Telecomunicaciones en la ceremonia de firma.</p>`
+  }
+};
+
+const SECTIONS = {
+  politica: {
+    label: 'Política',
+    title: 'Política Nacional',
+    articles: [
+      { title: 'La coalición oficialista pierde tres escaños clave en Diputados', tag: 'Política', excerpt: 'Tres legisladores anunciaron su pase a un bloque independiente.', id: 'coalicion' },
+      { title: 'El Senado debate mañana la reforma del sistema previsional', tag: 'Política', excerpt: 'La sesión especial fue convocada tras semanas de negociaciones entre bloques.', id: null },
+      { title: 'Gobernadores del norte amenazan con no transferir fondos coparticipables', tag: 'Política', excerpt: 'Cuatro provincias del NOA exigen compensaciones por el ajuste fiscal nacional.', id: null },
+    ]
+  },
+  economia: {
+    label: 'Economía',
+    title: 'Economía y Finanzas',
+    articles: [
+      { title: 'El Banco Central eleva la tasa de referencia al 48%', tag: 'Economía', excerpt: 'La decisión fue tomada en reunión de emergencia del directorio.', id: 'bcra' },
+      { title: 'El dólar libre supera los $1.900 por primera vez', tag: 'Economía', excerpt: 'La brecha con el oficial se amplió al 63%, máximo desde diciembre.', id: 'dolar' },
+      { title: 'Inflación de enero: 8,4% mensual, la más alta del año', tag: 'Economía', excerpt: 'Alimentos y bebidas lideraron el alza con un incremento del 10,2%.', id: null },
+    ]
+  },
+  mundo: {
+    label: 'Mundo',
+    title: 'Internacional',
+    articles: [
+      { title: 'Tensión en el Atlántico Sur: maniobras navales cerca de Malvinas', tag: 'Mundo', excerpt: 'El Ministerio de Defensa convocó al embajador británico.', id: 'malvinas' },
+      { title: 'La ONU debatirá la situación de los refugiados climáticos en el Pacífico', tag: 'Mundo', excerpt: 'Más de 800.000 personas podrían quedar sin territorio habitable antes de 2040.', id: null },
+      { title: 'Elecciones en Chile: segunda vuelta sin candidato claro', tag: 'Mundo', excerpt: 'Ningún postulante superó el umbral del 40% requerido para ganar en primera vuelta.', id: null },
+    ]
+  },
+  sociedad: {
+    label: 'Sociedad',
+    title: 'Sociedad',
+    articles: [
+      { title: 'Gremios docentes anuncian paro de 48 horas para la próxima semana', tag: 'Sociedad', excerpt: 'CTERA y cinco sindicatos exigen paritaria de emergencia.', id: 'paro' },
+      { title: 'Crisis habitacional en el AMBA: el alquiler promedio subió 180% en un año', tag: 'Sociedad', excerpt: 'Un estudio privado revela que el 40% de los inquilinos destina más del 60% de su ingreso al alquiler.', id: null },
+      { title: 'Récord de consultas en salud mental en hospitales públicos bonaerenses', tag: 'Sociedad', excerpt: 'Los servicios de guardia reportan un aumento del 55% en la demanda respecto de 2023.', id: null },
+    ]
+  },
+  tecnologia: {
+    label: 'Tecnología',
+    title: 'Tecnología',
+    articles: [
+      { title: 'Argentina firma acuerdo de fibra óptica submarina con consorcio europeo', tag: 'Tecnología', excerpt: 'Inversión de 2.300 millones de dólares para el litoral patagónico.', id: 'fibra' },
+      { title: 'ARSAT lanza su tercer satélite geoestacionario desde Guayana Francesa', tag: 'Tecnología', excerpt: 'El ARSAT-3 cubrirá zonas rurales sin conectividad en el norte del país.', id: null },
+      { title: 'Inteligencia artificial en la justicia: primer fallo asistido por IA en Argentina', tag: 'Tecnología', excerpt: 'Un juzgado de Rosario utilizó un modelo de lenguaje para analizar 4.000 páginas de expediente.', id: null },
+    ]
+  },
+  cultura: {
+    label: 'Cultura',
+    title: 'Cultura y Espectáculos',
+    articles: [
+      { title: 'El Colón reabre su temporada con una producción de "La Traviata" en coproducción con Milán', tag: 'Cultura', excerpt: 'El Teatro Colón presenta su ambiciosa producción después de ocho meses de reformas.', id: null },
+      { title: 'Premios Martín Fierro: las series de streaming dominan las nominaciones', tag: 'Cultura', excerpt: 'Por primera vez en la historia del premio, las plataformas superan en número a los canales de aire.', id: null },
+      { title: 'Feria del Libro: récord de visitantes con 1,2 millones en 18 días', tag: 'Cultura', excerpt: 'La 51ª edición cerró con el mejor número de asistencia de su historia.', id: null },
+    ]
+  },
+  deportes: {
+    label: 'Deportes',
+    title: 'Deportes',
+    articles: [
+      { title: 'Selección Argentina: Scaloni confirma lista para eliminatorias sudamericanas', tag: 'Deportes', excerpt: 'Messi integra el plantel pese a la lesión de tobillo que lo marginó en enero.', id: null },
+      { title: 'Boca vence a Racing en el clásico y se afianza en la cima del torneo', tag: 'Deportes', excerpt: 'El conjunto xeneize ganó 2-0 con goles de Merentiel y Cavani en el Cilindro.', id: null },
+      { title: 'Argentina será sede del Campeonato Mundial de Polo 2027', tag: 'Deportes', excerpt: 'La Federación Internacional confirmó la candidatura del Campo Argentino de Polo.', id: null },
+    ]
+  },
+  opinion: {
+    label: 'Opinión',
+    title: 'Opinión y Análisis',
+    articles: [
+      { title: '"La deuda con el FMI es impagable sin crecimiento real" — Federico Monteiro', tag: 'Opinión', excerpt: 'El economista advierte que ningún ajuste fiscal resuelve el problema de fondo sin inversión productiva.', id: null },
+      { title: '"El sistema judicial necesita una reforma de fondo, no parches" — Carla Venegas', tag: 'Opinión', excerpt: 'La abogada constitucionalista analiza los límites de las reformas cosméticas al Poder Judicial.', id: null },
+      { title: '"Malvinas como geopolítica: lo que el conflicto del Atlántico revela" — Andrés Pizarro', tag: 'Opinión', excerpt: 'El politólogo internacional sitúa las maniobras navales en el contexto de la disputa por recursos.', id: null },
+    ]
+  }
+};
+
+const ZONE_DATA = {
+  norte: [
+    { title: 'Menor de 14 años desaparecido en San Fernando: 72 horas sin novedades', excerpt: 'La familia denuncia que la comisaría local demoró más de 48 horas en tomar la denuncia.', action: "goToPhase2('san-fernando')" },
+    { title: 'Adolescente de 16 desaparece tras asistir a torneo escolar en Tigre', excerpt: 'Los compañeros afirman que fue visto hablando con un hombre de civil cerca del predio.', action: "goToPhase2('adolescente-tigre')" },
+    { title: 'Vecinos de Escobar organizan búsqueda después de que las autoridades "cerraron el caso"', excerpt: 'A cuatro meses de la desaparición, la justicia archivó el expediente.', action: "goToPhase2('escobar')" },
+    { title: '● El caso Luciano Ferreyra: un año sin respuestas — COBERTURA ESPECIAL', excerpt: 'El 19 de febrero de 2025 desapareció Luciano Ferreyra, 11 años, de Don Torcuato.', action: "goToPhase2('luciano')", special: true },
+  ],
+  caba: [
+    { title: 'Joven de 15 años desaparecida en Flores: hallada dos días después en Once', excerpt: 'La adolescente fue localizada gracias a las cámaras del sistema BA-CAM.', action: null },
+    { title: 'Menor de 12 desaparece en Villa Lugano: la madre denuncia negligencia policial', excerpt: 'La comisaría 40ª demoró 36 horas en activar el protocolo de búsqueda.', action: null },
+  ],
+  interior: [
+    { title: 'Tres adolescentes desaparecidos en Tucumán: el caso que conmueve al NOA', excerpt: 'Los tres jóvenes de entre 13 y 16 años desaparecieron en un radio de 5 km.', action: null },
+    { title: 'Córdoba: madre busca a su hijo de 14 años desaparecido hace seis meses', excerpt: 'El expediente fue transferido tres veces a distintos juzgados sin avances.', action: null },
+    { title: 'Mendoza: caso de menor desaparecida reactivado tras aparición de nuevo testigo', excerpt: 'Un empleado de una estación de servicio dice haber visto a la niña tres días después de la desaparición.', action: null },
+  ]
+};
+
+// ============ MODAL LOGIC ============
+
+function openModal(type) {
+  document.getElementById('modal-overlay').style.display = 'block';
+  document.getElementById('modal-login').style.display = type === 'login' ? 'block' : 'none';
+  document.getElementById('modal-subscribe').style.display = type === 'subscribe' ? 'block' : 'none';
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').style.display = 'none';
+  document.getElementById('modal-login').style.display = 'none';
+  document.getElementById('modal-subscribe').style.display = 'none';
+}
+
+function selectPlan(el) {
+  document.querySelectorAll('#modal-subscribe > div[style*="border"]').forEach(d => {
+    d.style.borderWidth = '1px'; d.style.borderColor = '#eee'; d.style.background = 'white';
+  });
+  el.style.borderWidth = '2px'; el.style.borderColor = '#111'; el.style.background = '#f9f9f9';
+}
+
+// ============ SECTION NAVIGATION ============
+
+let previousView = 'portada';
+
+function showSection(key) {
+  // If not on phase-0, go there first then show section
+  if (document.getElementById('phase-0').style.display === 'none') {
+    goToPhase0();
+  }
+
+  // Update nav active state
+  document.querySelectorAll('.p0-nav a').forEach(a => a.classList.remove('active'));
+
+  if (key === 'portada') {
+    const vp = document.getElementById('view-portada');
+    const vs = document.getElementById('view-section');
+    const va = document.getElementById('view-article');
+    if (vp) vp.style.display = '';
+    if (vs) vs.style.display = 'none';
+    if (va) va.style.display = 'none';
+    return;
+  }
+
+  const data = SECTIONS[key];
+  if (!data) return;
+
+  const vp = document.getElementById('view-portada');
+  const va = document.getElementById('view-article');
+  const vs = document.getElementById('view-section');
+  if (vp) vp.style.display = 'none';
+  if (va) va.style.display = 'none';
+  if (vs) vs.style.display = 'block';
+
+  const stag = document.getElementById('section-tag');
+  const stitle = document.getElementById('section-title');
+  const grid = document.getElementById('section-articles');
+  if (stag) stag.textContent = data.label;
+  if (stitle) stitle.textContent = data.title;
+
+  if (grid) {
+    grid.innerHTML = data.articles.map(art => `
+      <div class="p0-card" onclick="${art.id ? `openArticle('${art.id}')` : 'void(0)'}" style="cursor:${art.id ? 'pointer' : 'default'};">
+        <div class="p0-card-img" style="background:#111;">
+          <svg width="60" height="40" viewBox="0 0 60 40" fill="none">
+            <rect x="8" y="8" width="44" height="24" rx="1" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+            <line x1="14" y1="18" x2="46" y2="18" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+            <line x1="14" y1="24" x2="36" y2="24" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+          </svg>
+        </div>
+        <span class="p0-tag">${art.tag}</span>
+        <div class="p0-card-title">${art.title}</div>
+        <div class="p0-card-excerpt">${art.excerpt}</div>
+      </div>
+    `).join('');
+  }
+}
+
+// ============ ARTICLE VIEWER ============
+
+function openArticle(id) {
+  const art = ARTICLES[id];
+  if (!art) return;
+
+  // Must be on phase-0
+  if (document.getElementById('phase-0').style.display === 'none') goToPhase0();
+
+  const vp = document.getElementById('view-portada');
+  const vs = document.getElementById('view-section');
+  const va = document.getElementById('view-article');
+  if (vp) vp.style.display = 'none';
+  if (vs) vs.style.display = 'none';
+  if (va) va.style.display = 'block';
+
+  const set = (id, val, prop='textContent') => { const el = document.getElementById(id); if (el) el[prop] = val; };
+  set('art-tag', art.tag);
+  set('art-title', art.title);
+  set('art-deck', art.deck);
+  set('art-meta', art.meta);
+  set('art-imgcap', art.imgcap);
+  set('art-body', art.body, 'innerHTML');
+  set('art-img', `<svg width="200" height="80" viewBox="0 0 200 80" fill="none">
+    <rect x="10" y="10" width="180" height="60" rx="2" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+    <line x1="20" y1="35" x2="180" y2="35" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+    <line x1="20" y1="48" x2="140" y2="48" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+  </svg>`, 'innerHTML');
+  window.scrollTo(0, 0);
+}
+
+function closeArticle() {
+  const va = document.getElementById('view-article');
+  const vp = document.getElementById('view-portada');
+  if (va) va.style.display = 'none';
+  if (vp) vp.style.display = '';
+  window.scrollTo(0, 0);
+}
+
+// ============ ZONE FILTER (Phase 1) ============
+
+function filterZone(zone) {
+  const data = ZONE_DATA[zone] || ZONE_DATA.norte;
+  document.getElementById('ph1-count').textContent = data.length;
+  const grid = document.getElementById('ph1-grid');
+  grid.innerHTML = data.map(item => `
+    <div class="sub-card" onclick="${item.action || 'void(0)'}" style="cursor:${item.action ? 'pointer' : 'default'};${item.special ? 'border:2px solid rgba(192,57,43,0.4);' : ''}">
+      ${item.special ? '<div style="font-family:\'IBM Plex Mono\',monospace;font-size:10px;color:var(--red);margin-bottom:8px;letter-spacing:0.1em;">● ACTUALIZACIÓN HOY</div>' : ''}
+      <h3>${item.title}</h3>
+      <p>${item.excerpt}</p>
+      <span class="link-btn" style="${item.special ? 'color:var(--red);' : ''}">→ Leer nota completa</span>
+    </div>
+  `).join('');
+}
+
+// ============ NAVIGATION LOGIC ============
+
+function hideAllPhases() {
+  vnActive = false;
+  ['phase-0','phase-1','phase-2','phase-2b','phase-3','phase-4'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+}
+
+function goToPhase0() {
+  hideAllPhases();
+  document.getElementById('phase-0').style.display = 'block';
+  window.scrollTo(0,0);
+}
+
+function goToPhase1(section, bc1, bc2) {
+  hideAllPhases();
+  document.getElementById('phase-1').style.display = 'block';
+  // Update breadcrumb if element exists
+  const bc2el = document.getElementById('ph1-breadcrumb2');
+  if (bc2el) bc2el.textContent = bc2 || 'Casos sin resolver';
+  window.scrollTo(0,0);
+}
+
+function goToPhase2(article) {
+  hideAllPhases();
+  document.getElementById('phase-2').style.display = 'block';
+  window.scrollTo(0,0);
+}
+
+function goToPhase2b() {
+  hideAllPhases();
+  document.getElementById('phase-2b').style.display = 'block';
+  window.scrollTo(0,0);
+}
+
+function goToPhase3() {
+  hideAllPhases();
+  document.getElementById('phase-3').style.display = 'block';
+  window.scrollTo(0,0);
+
+  // Show button after terminal finishes
+  setTimeout(() => {
+    document.getElementById('terminal-btn').style.display = 'block';
+  }, 22000);
+}
+
+function goToPhase4() {
+  hideAllPhases();
+  vnActive = true;
+  document.getElementById('phase-4').style.display = 'block';
+  document.getElementById('phase-4').focus();
+  window.scrollTo(0,0);
+
+  // Init stars
+  createStars('stars-1', 80);
+  createStars('stars-ufo', 200);
+
+  // Init rain when scene 5 becomes active (we'll init lazily)
+  document.getElementById('vn-map').classList.add('show');
+}
+
+// ============ VISUAL NOVEL LOGIC ============
+
+let currentScene = 1;
+const totalScenes = 32;
+let isFading = false;
+
+function advanceScene(next) {
+  if (next > totalScenes) return;
+  if (isFading) return;
+
+  // Block if choices are showing
+  const choices = document.getElementById('choice-22');
+  if (choices && choices.style.display !== 'none' && choices.style.display !== '') return;
+
+  isFading = true;
+  const overlay = document.getElementById('fade-overlay');
+  overlay.style.opacity = '1';
+  overlay.style.pointerEvents = 'all';
+
+  setTimeout(() => {
+    document.querySelectorAll('.vn-scene').forEach(s => s.classList.remove('active'));
+
+    const nextScene = document.getElementById('scene-' + next);
+    if (nextScene) {
+      nextScene.classList.add('active');
+      currentScene = next;
+      if (next === 5) initRain();
+      if (next === 22) {
+        // Show choices for scene 22
+        const c = document.getElementById('choice-22');
+        if (c) c.style.display = 'flex';
+      }
+      if (next === 23) createStars('stars-ufo', 200);
+      updateMap(next);
+    }
+
+    overlay.style.opacity = '0';
+    overlay.style.pointerEvents = 'none';
+    setTimeout(() => { isFading = false; }, 500);
+  }, 400);
+}
+
+function choiceSelect(next) {
+  const choices = document.getElementById('choice-22');
+  if (choices) choices.style.display = 'none';
+  advanceScene(next);
+}
+
+function fadeTransition(callback) {
+  // kept for compatibility but now unused
+  callback();
+}
+
+function updateMap(scene) {
+  document.querySelectorAll('.vn-map-item').forEach(i => i.classList.remove('active'));
+  if (scene <= 4) document.getElementById('map-1').classList.add('active');
+  else if (scene <= 9) document.getElementById('map-2').classList.add('active');
+  else if (scene <= 14) document.getElementById('map-3').classList.add('active');
+  else if (scene <= 22) document.getElementById('map-4').classList.add('active');
+  else document.getElementById('map-5').classList.add('active');
+}
+
+// ============ STARS ============
+function createStars(containerId, count) {
+  const container = document.getElementById(containerId);
+  if (!container || container.children.length > 0) return;
+  for (let i = 0; i < count; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    const size = Math.random() * 2.5 + 0.5;
+    star.style.cssText = `
+      width:${size}px; height:${size}px;
+      left:${Math.random()*100}%;
+      top:${Math.random()*100}%;
+      background: white;
+      --dur: ${2 + Math.random()*4}s;
+      --delay: ${Math.random()*3}s;
+      --min-op: ${0.1 + Math.random()*0.3};
+    `;
+    container.appendChild(star);
+  }
+}
+
+// ============ RAIN ============
+function initRain() {
+  const canvas = document.getElementById('rain-canvas');
+  if (!canvas || canvas._inited) return;
+  canvas._inited = true;
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const drops = Array.from({length: 120}, () => ({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    speed: 3 + Math.random() * 5,
+    length: 10 + Math.random() * 20,
+    opacity: 0.1 + Math.random() * 0.3
+  }));
+
+  function drawRain() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drops.forEach(d => {
+      ctx.strokeStyle = `rgba(100,150,200,${d.opacity})`;
+      ctx.lineWidth = 0.5;
+      ctx.beginPath();
+      ctx.moveTo(d.x, d.y);
+      ctx.lineTo(d.x + 1, d.y + d.length);
+      ctx.stroke();
+      d.y += d.speed;
+      if (d.y > canvas.height) { d.y = -d.length; d.x = Math.random() * canvas.width; }
+    });
+    requestAnimationFrame(drawRain);
+  }
+  drawRain();
+}
+
+// ============ KEYBOARD ============
+
+document.addEventListener('keydown', (e) => {
+  if (!vnActive) return;
+  if (['Shift','Control','Alt','Meta','Tab','Escape','F1','F2','F3','F4','F5','F6','F7','F8','F9','F10','F11','F12'].includes(e.key)) return;
+  e.preventDefault();
+  const choices = document.getElementById('choice-22');
+  if (choices && choices.style.display !== 'none' && choices.style.display !== '') return;
+  advanceScene(currentScene + 1);
+});
+
+document.getElementById('phase-4').setAttribute('tabindex', '-1');
+</script>
+</body>
+</html>
